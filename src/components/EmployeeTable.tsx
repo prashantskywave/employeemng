@@ -7,6 +7,8 @@ import Status from "@/components/Status";
 import SearchFilter from "@/components/SearchFilter";
 import Filters from "@/components/Filter";
 import Link from "next/link";
+import { deleteEmployee } from "@/services/employeeApi";
+
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -20,6 +22,18 @@ export default function EmployeeTable() {
       .then(setEmployees)
       .catch(console.error);
   }, []);
+
+    const handleDelete = async (id: string) => {
+    const confirmed = confirm("Are you sure you want to delete this employee?");
+    if (!confirmed) return;
+
+    try {
+      await deleteEmployee(id);
+      setEmployees((prev) => prev.filter((emp) => emp._id !== id));
+    } catch (error) {
+      alert("Failed to delete employee");
+    }
+  };
 
   const filteredEmployees = employees.filter((emp) => {
     const matchSearch =
@@ -54,6 +68,7 @@ export default function EmployeeTable() {
             <th className="p-2 border">Department</th>
             <th className="p-2 border">Role</th>
             <th className="p-2 border">Status</th>
+            <th className="p-2 border">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -70,6 +85,20 @@ export default function EmployeeTable() {
                 <td className="p-2 border">{emp.role}</td>
                 <td className="p-2 border">
                   <Status status={emp.status} />
+                </td>
+                <td className="p-2 border">
+                  <Link
+                    href={`/employees/edit/${emp._id}`}
+                    className="text-blue-600 underline mr-3"
+                  >
+                    Edit
+                  </Link>
+                   <button
+                    onClick={() => handleDelete(emp._id)}
+                    className="text-red-600 underline"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))
