@@ -1,6 +1,17 @@
-const mongoose = require("mongoose");
+import mongoose, { Schema, model, models, Model } from "mongoose";
 
-const employeeSchema = new mongoose.Schema(
+export interface EmployeeDocument {
+  employeeId: string;
+  name: string;
+  email?: string;
+  contact?: string;
+  department: string;
+  role: string;
+  joiningDate: Date;
+  status: "Active" | "Inactive";
+}
+
+const employeeSchema = new Schema<EmployeeDocument>(
   {
     employeeId: {
       type: String,
@@ -42,4 +53,7 @@ const employeeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Employee", employeeSchema);
+const Employee: Model<EmployeeDocument> =
+  models.Employee || model<EmployeeDocument>("Employee", employeeSchema);
+
+export default Employee;

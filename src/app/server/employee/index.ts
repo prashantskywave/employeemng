@@ -1,6 +1,6 @@
 import { Employee } from "@/types/employee";
 import { Request, Response } from "express";
-import EmployeeModel from "../../models/employee.model";
+import EmployeeModel from "@/models/Employee";
 
 export const getEmployees = async (req: Request, res: Response) => {
   try {

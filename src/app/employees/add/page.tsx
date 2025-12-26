@@ -37,7 +37,7 @@ export default function AddEmployeePage() {
 
     if (res.ok) {
       alert("Employee added successfully");
-      router.push("/"); // go back to list
+      router.push("/"); 
     } else {
       alert("Failed to add employee");
     }

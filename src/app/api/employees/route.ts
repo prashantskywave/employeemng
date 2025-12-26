@@ -1,18 +1,32 @@
 import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db";
+import Employee from "@/models/Employee";
 
 export async function GET() {
   try {
-    const res = await fetch("http://localhost:5000/api/employees", {
-      cache: "no-store",
-    });
-
-    const data = await res.json();
-
-    return NextResponse.json(data);
+    await connectDB();
+    const employees = await Employee.find().sort({ createdAt: -1 });
+    return NextResponse.json(employees);
   } catch (error) {
     return NextResponse.json(
-      { error: "Backend not reachable" },
+      { error: "Failed to fetch employees" },
       { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    await connectDB();
+    const body = await request.json();
+
+    const employee = await Employee.create(body);
+
+    return NextResponse.json(employee, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message || "Failed to create employee" },
+      { status: 400 }
     );
   }
 }
