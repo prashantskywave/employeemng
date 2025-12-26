@@ -15,7 +15,7 @@
 // });
 import dotenv from "dotenv";
 import express from "express";
-import connectDB from "../lib/db.js";
+import connectDB from "../lib/db";
 import employeeRoutes from "./routes/employee.routes.js";
 
 dotenv.config();

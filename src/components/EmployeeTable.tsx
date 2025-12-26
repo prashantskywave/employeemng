@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Employee } from "@/types/employee";
 import { fetchEmployees } from "@/lib/employeeService";
 import Status from "@/components/Status";
@@ -9,6 +9,8 @@ import Filters from "@/components/Filter";
 import Link from "next/link";
 import { deleteEmployee } from "@/services/employeeApi";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -16,9 +18,9 @@ export default function EmployeeTable() {
   const [department, setDepartment] = useState("all");
   const [role, setRole] = useState("all");
   const [status, setStatus] = useState("all");
-
-  // 👉 three dot menu state
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  const menuRef = useRef<HTMLTableCellElement | null>(null);
 
   useEffect(() => {
     fetchEmployees()
@@ -26,16 +28,52 @@ export default function EmployeeTable() {
       .catch(console.error);
   }, []);
 
-  const handleDelete = async (id: string) => {
-    const confirmed = confirm("Are you sure you want to delete this employee?");
-    if (!confirmed) return;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null);
+      }
+    };
 
-    try {
-      await deleteEmployee(id);
-      setEmployees((prev) => prev.filter((emp) => emp._id !== id));
-    } catch (error) {
-      alert("Failed to delete employee");
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDelete = (id: string) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <span>Are you sure you want to delete this employee?</span>
+          <div className="flex justify-end gap-2">
+            <button
+              className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              onClick={async () => {
+                try {
+                  await deleteEmployee(id);
+                  setEmployees((prev) =>
+                    prev.filter((emp) => emp._id !== id)
+                  );
+                  toast.success("Employee deleted successfully");
+                } catch {
+                  toast.error("Failed to delete employee");
+                } finally {
+                  toast.dismiss(t.id);
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity }
+    );
   };
 
   const filteredEmployees = employees.filter((emp) => {
@@ -53,6 +91,8 @@ export default function EmployeeTable() {
 
   return (
     <div className="space-y-4">
+      <Toaster position="top-center" reverseOrder={false} />
+
       <SearchFilter onSearch={setSearch} />
 
       <Filters
@@ -81,29 +121,24 @@ export default function EmployeeTable() {
             filteredEmployees.map((emp) => (
               <tr key={emp._id}>
                 <td className="p-2 border text-center">
-                  <Link
-                    href={`/employees/${emp._id}`}
-                    className="text-blue-600"
-                  >
+                  <Link href={`/employees/${emp._id}`} className="text-blue-600">
                     {emp.employeeId}
                   </Link>
                 </td>
-
                 <td className="p-2 border text-center">{emp.name}</td>
                 <td className="p-2 border text-center">{emp.department}</td>
                 <td className="p-2 border text-center">{emp.role}</td>
-
                 <td className="p-2 border text-center">
                   <Status status={emp.status} />
                 </td>
 
-                {/* ✅ THREE DOT ACTION MENU */}
-                <td className="p-2 border text-center relative">
+                <td
+                  ref={openMenuId === emp._id ? menuRef : null}
+                  className="p-2 border text-center relative"
+                >
                   <button
                     onClick={() =>
-                      setOpenMenuId(
-                        openMenuId === emp._id ? null : emp._id
-                      )
+                      setOpenMenuId(openMenuId === emp._id ? null : emp._id)
                     }
                     className="p-1"
                   >
@@ -111,13 +146,14 @@ export default function EmployeeTable() {
                   </button>
 
                   {openMenuId === emp._id && (
-                    <div className="absolute right-6 top-8 bg-white border rounded shadow-md z-10">
+                    <div className="absolute right-0 top-8 bg-white border rounded shadow-md z-10 min-w-[120px]">
                       <Link
                         href={`/employees/edit/${emp._id}`}
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={() => setOpenMenuId(null)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
                       >
-                        Edit
+                        <FiEdit className="text-blue-600" />
+                        <span>Edit</span>
                       </Link>
 
                       <button
@@ -125,9 +161,10 @@ export default function EmployeeTable() {
                           setOpenMenuId(null);
                           handleDelete(emp._id);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                       >
-                        Delete
+                        <FiTrash2 />
+                        <span>Delete</span>
                       </button>
                     </div>
                   )}
@@ -136,10 +173,7 @@ export default function EmployeeTable() {
             ))
           ) : (
             <tr>
-              <td
-                colSpan={6}
-                className="p-4 text-center text-gray-500"
-              >
+              <td colSpan={6} className="p-4 text-center text-gray-500">
                 No employees found
               </td>
             </tr>
