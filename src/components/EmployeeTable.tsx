@@ -132,42 +132,24 @@ export default function EmployeeTable() {
                   <Status status={emp.status} />
                 </td>
 
-                <td
-                  ref={openMenuId === emp._id ? menuRef : null}
-                  className="p-2 border text-center relative"
-                >
-                  <button
-                    onClick={() =>
-                      setOpenMenuId(openMenuId === emp._id ? null : emp._id)
-                    }
-                    className="p-1"
-                  >
-                    <BsThreeDotsVertical />
-                  </button>
+                <td className="p-2 border text-center">
+                  <div className="flex justify-center gap-3">
+                    <Link
+                      href={`/employees/edit/${emp._id}`}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <FiEdit />
+                    </Link>
 
-                  {openMenuId === emp._id && (
-                    <div className="absolute right-0 top-8 bg-white border rounded shadow-md z-10 min-w-[120px]">
-                      <Link
-                        href={`/employees/edit/${emp._id}`}
-                        onClick={() => setOpenMenuId(null)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        <FiEdit className="text-blue-600" />
-                        <span>Edit</span>
-                      </Link>
-
-                      <button
-                        onClick={() => {
-                          setOpenMenuId(null);
-                          handleDelete(emp._id);
-                        }}
-                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                      >
-                        <FiTrash2 />
-                        <span>Delete</span>
-                      </button>
-                    </div>
-                  )}
+                    <button
+                      onClick={() => handleDelete(emp._id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))
