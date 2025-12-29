@@ -10,12 +10,10 @@ import Link from "next/link";
 import { deleteEmployee } from "@/services/employeeApi";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
+
 import {
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 
@@ -28,11 +26,15 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "./ui/pagination";
 
-
-
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -42,9 +44,8 @@ export default function EmployeeTable() {
   const [status, setStatus] = useState("all");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
   const itemsPerPage = 5;
-
-
   const menuRef = useRef<HTMLTableCellElement | null>(null);
 
   useEffect(() => {
@@ -52,10 +53,10 @@ export default function EmployeeTable() {
       .then(setEmployees)
       .catch(console.error);
   }, []);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [search, department, role, status]);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,7 +66,8 @@ export default function EmployeeTable() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleDelete = (id: string) => {
@@ -140,120 +142,119 @@ export default function EmployeeTable() {
         setStatus={setStatus}
       />
 
-      <Table>
-  <TableHeader>
-    <TableRow>
-      <TableHead className="text-center">Employee ID</TableHead>
-      <TableHead className="text-center">Name</TableHead>
-      <TableHead className="text-center">Department</TableHead>
-      <TableHead className="text-center">Role</TableHead>
-      <TableHead className="text-center">Status</TableHead>
-      <TableHead className="text-center">Actions</TableHead>
-    </TableRow>
-  </TableHeader>
+      <table className="w-full border border-gray-300 border-collapse rounded-md">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="p-2 border text-center">Employee ID</th>
+            <th className="p-2 border text-center">Name</th>
+            <th className="p-2 border text-center">Department</th>
+            <th className="p-2 border text-center">Role</th>
+            <th className="p-2 border text-center">Status</th>
+            <th className="p-2 border text-center">Actions</th>
+          </tr>
+        </thead>
 
-  <TableBody>
-    {paginatedEmployees.length ? (
-      paginatedEmployees.map((emp) => (
-        <TableRow key={emp._id}>
-          <TableCell className="text-center">
-            <Link
-              href={`/employees/${emp._id}`}
-              className="text-blue-600 underline"
-            >
-              {emp.employeeId}
-            </Link>
-          </TableCell>
-
-          <TableCell className="text-center">{emp.name}</TableCell>
-          <TableCell className="text-center">{emp.department}</TableCell>
-          <TableCell className="text-center">{emp.role}</TableCell>
-
-          <TableCell className="text-center">
-            <Status status={emp.status} />
-          </TableCell>
-
-          <TableCell className="text-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href={`/employees/edit/${emp._id}`}>
-                    Edit
+        <TableBody>
+          {paginatedEmployees.length ? (
+            paginatedEmployees.map((emp) => (
+              <TableRow key={emp._id}>
+                <TableCell className="text-center border border-gray-300">
+                  <Link
+                    href={`/employees/${emp._id}`}
+                    className="text-blue-600 underline"
+                  >
+                    {emp.employeeId}
                   </Link>
-                </DropdownMenuItem>
+                </TableCell>
 
-                <DropdownMenuItem
-                  className="text-red-600"
-                  onClick={() => handleDelete(emp._id)}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-      ))
-    ) : (
-      <TableRow>
-        <TableCell
-          colSpan={6}
-          className="text-center py-6 text-gray-500"
-        >
-          No employees found
-        </TableCell>
-      </TableRow>
-    )}
-  </TableBody>
-</Table>
+                <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
+                <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
+                <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
+
+                <TableCell className="text-center border border-gray-300">
+                  <Status status={emp.status} />
+                </TableCell>
+
+                <TableCell className="text-center border border-gray-300">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/employees/edit/${emp._id}`}
+                          className="flex items-center gap-2"
+                        >
+                          <FiEdit className="h-4 w-4 text-black" />
+                          Edit
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        className="flex items-center gap-2 text-red-600"
+                        onClick={() => handleDelete(emp._id)}
+                      >
+                        <FiTrash2 className="h-4 w-4 text-red-600" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-6 text-gray-500">
+                No employees found
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </table>
 
       {totalPages > 1 && (
-  <Pagination className="mt-6">
-    <PaginationContent>
+        <Pagination className="mt-6">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() =>
+                  setCurrentPage((p) => Math.max(p - 1, 1))
+                }
+                aria-disabled={currentPage === 1}
+              />
+            </PaginationItem>
 
-      <PaginationItem>
-        <PaginationPrevious
-          onClick={() =>
-            setCurrentPage((p) => Math.max(p - 1, 1))
-          }
-          aria-disabled={currentPage === 1}
-        />
-      </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    isActive={currentPage === page}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
 
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-        (page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              isActive={currentPage === page}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-        )
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  setCurrentPage((p) =>
+                    Math.min(p + 1, totalPages)
+                  )
+                }
+                aria-disabled={currentPage === totalPages}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
-
-      <PaginationItem>
-        <PaginationNext
-          onClick={() =>
-            setCurrentPage((p) =>
-              Math.min(p + 1, totalPages)
-            )
-          }
-          aria-disabled={currentPage === totalPages}
-        />
-      </PaginationItem>
-
-    </PaginationContent>
-  </Pagination>
-)}
-
-
     </div>
   );
 }
