@@ -4,7 +4,6 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { FaUserEdit } from "react-icons/fa";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +23,6 @@ import {
 
 const inputClass = "h-9 text-sm leading-none px-3 placeholder:text-sm";
 const selectInputLike = "h-9 w-full text-sm px-3";
-const buttonInputLike = "h-9 text-sm px-3 rounded-md";
 
 export default function EditEmployeePage({
   params,
@@ -51,6 +49,7 @@ export default function EditEmployeePage({
     async function fetchEmployee() {
       try {
         const res = await fetch(`/api/employees/${id}`);
+        if (!res.ok) throw new Error();
         const data = await res.json();
 
         setForm({
@@ -87,6 +86,7 @@ export default function EditEmployeePage({
       });
 
       toast.success("Employee updated successfully");
+      router.push("/employees");
     } catch {
       toast.error("Update failed");
     }
@@ -232,17 +232,9 @@ export default function EditEmployeePage({
               </div>
             </div>
 
-            <div className="flex gap-4 pt-6 justify-center">
-              <Button type="submit" className={`w-32 ${buttonInputLike}`}>
-                Save
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className={`w-32 ${buttonInputLike}`}
-                onClick={() => router.back()}
-              >
+           <div className="flex gap-4 justify-center pt-4">
+              <Button type="submit">Save</Button>
+              <Button variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
             </div>
