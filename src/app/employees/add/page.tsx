@@ -72,7 +72,7 @@ export default function AddEmployeePage() {
 
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-semibold flex items-center gap-3 justify-center">
+          <CardTitle className="text-2xl font-semibold flex items-center gap-3 justify-right">
             <IoMdPersonAdd className="text-xl" /> Add Employee
           </CardTitle>
         </CardHeader>

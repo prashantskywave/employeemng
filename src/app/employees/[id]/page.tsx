@@ -1,43 +1,129 @@
 import { notFound } from "next/navigation";
+import { BiDetail } from "react-icons/bi";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Employee {
   _id: string;
+  employeeId: string; 
   name: string;
   email: string;
   contact: string;
   department: string;
   role: string;
   joiningDate: string;
+  status: string; 
 }
 
-export default async function EmployeeDetails({ params }: { params: { id: string } }) {
-  const id = params.id; 
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+export default async function EmployeeDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   if (!id) notFound();
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/employees/${id}`, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:3000/api/employees/${id}`,
+    { cache: "no-store" }
+  );
 
   if (!res.ok) notFound();
+
   const employee: Employee = await res.json();
 
   return (
-    <div className="p-6 max-w-md mx-auto border rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Employee Details</h1>
-      <p><strong>ID:</strong> {employee._id}</p>
-      <p><strong>Name:</strong> {employee.name}</p>
-      <p><strong>Email:</strong> {employee.email}</p>
-      <p><strong>Contact:</strong> {employee.contact}</p>
-      <p><strong>Department:</strong> {employee.department}</p>
-      <p><strong>Role:</strong> {employee.role}</p>
-      <p><strong>Joining Date:</strong> {employee.joiningDate}</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Card className="w-full max-w-3xl shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+            <BiDetail className="text-blue-500 text-2xl" />
+            Employee Details
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="text-sm font-medium">Employee ID</label>
+              <input
+                value={employee.employeeId}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
 
-      <button
-        onClick={() => history.back()}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Back
-      </button>
+            <div>
+              <label className="text-sm font-medium">Name</label>
+              <input
+                value={employee.name}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <input
+                value={employee.email}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Contact</label>
+              <input
+                value={employee.contact}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Department</label>
+              <input
+                value={employee.department}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Role</label>
+              <input
+                value={employee.role}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Joining Date</label>
+              <input
+                value={formatDate(employee.joiningDate)}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Status</label>
+              <input
+                value={employee.status}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
