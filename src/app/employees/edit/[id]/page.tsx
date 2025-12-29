@@ -180,10 +180,10 @@ export default function EditEmployeePage({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="HR">Human Resources</SelectItem>
+                    <SelectItem value="Human Resources">Human Resources</SelectItem>
                     <SelectItem value="Finance">Finance</SelectItem>
                     <SelectItem value="Engineering">Engineering</SelectItem>
-                    <SelectItem value="Sales">Manager</SelectItem>
+                    <SelectItem value="Manager">Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -200,9 +200,9 @@ export default function EditEmployeePage({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Manager">Frontend Developer</SelectItem>
-                    <SelectItem value="Team Lead">HR</SelectItem>
-                    <SelectItem value="Developer">Accountant</SelectItem>
+                    <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+                    <SelectItem value="HR">HR</SelectItem>
+                    <SelectItem value="Accountant">Accountant</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
