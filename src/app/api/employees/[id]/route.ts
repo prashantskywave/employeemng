@@ -62,3 +62,4 @@ export async function DELETE(
 
   return NextResponse.json({ message: "Employee deleted permanently" }, { status: 200 });
 }
+

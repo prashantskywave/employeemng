@@ -10,3 +10,4 @@ const EmployeeTable = dynamic(
 export default function EmployeeTableClient() {
   return <EmployeeTable />;
 }
+
