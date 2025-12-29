@@ -2,7 +2,7 @@ import EmployeeTableClient from "@/components/EmployeeTableClient";
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="p-6">
       <h1 className="text-3xl font-bold mb-6">
         Employee Management
       </h1>
