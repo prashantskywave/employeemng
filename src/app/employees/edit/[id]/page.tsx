@@ -7,6 +7,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatEmployeeId } from '@/utils/formatEmployeeId';
 import {
   Select,
   SelectContent,
@@ -73,29 +74,17 @@ export default function EditEmployeePage({
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target;
+
+  if (name === "employeeId") {
+    setForm({ ...form, employeeId: formatEmployeeId(value) });
+  } else {
+    setForm({ ...form, [name]: value });
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-    if (!nameRegex.test(form.name.trim())) {
-      toast.error(
-        "Name must contain only letters and each word should start with a capital letter"
-      );
-      return;
-    }
-
-    const emailRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    if (!emailRegex.test(form.email.trim())) {
-      toast.error(
-        "Email must include at least one number and one special character"
-      );
-      return;
-    }
-
     try {
       await fetch(`/api/employees/${id}`, {
         method: "PUT",
@@ -132,6 +121,7 @@ export default function EditEmployeePage({
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <Label className="text-sm text-gray-600">Employee ID</Label>
@@ -190,10 +180,10 @@ export default function EditEmployeePage({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Human Resources">Human Resources</SelectItem>
+                    <SelectItem value="HR">Human Resources</SelectItem>
                     <SelectItem value="Finance">Finance</SelectItem>
                     <SelectItem value="Engineering">Engineering</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
+                    <SelectItem value="Sales">Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -210,9 +200,9 @@ export default function EditEmployeePage({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
-                    <SelectItem value="HR">HR</SelectItem>
-                    <SelectItem value="Accountant">Accountant</SelectItem>
+                    <SelectItem value="Manager">Frontend Developer</SelectItem>
+                    <SelectItem value="Team Lead">HR</SelectItem>
+                    <SelectItem value="Developer">Accountant</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -255,10 +245,10 @@ export default function EditEmployeePage({
                 Cancel
               </Button>
             </div>
+
           </form>
         </CardContent>
       </Card>
     </div>
   );
 }
-
