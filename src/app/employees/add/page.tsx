@@ -20,8 +20,7 @@ export default function AddEmployeePage() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [form, setForm] = useState({
-    employeeId: "",
+  const initialForm = {
     name: "",
     email: "",
     contact: "",
@@ -29,17 +28,20 @@ export default function AddEmployeePage() {
     role: "",
     joiningDate: "",
     status: "",
-  });
+  };
+
+
+  const [form, setForm] = useState(initialForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
 
-    if (name === "employeeId") {
-      setForm({ ...form, employeeId: formatEmployeeId(value) });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
   };
+  const handleReset = () => {
+    setForm(initialForm);
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +95,7 @@ export default function AddEmployeePage() {
           position: "top-center",
           style: { textAlign: "center" },
         });
+        setForm(initialForm);
         router.push("/");
       } else {
         const data = await res.json();
@@ -136,24 +139,26 @@ export default function AddEmployeePage() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+
             <Input
-              name="employeeId"
-              placeholder="Employee ID"
+              name="name"
+              placeholder="Name"
+              value={form.name}
               onChange={handleChange}
             />
-
-            <Input name="name" placeholder="Name" onChange={handleChange} />
 
             <Input
               name="email"
               type="email"
               placeholder="Email"
+              value={form.email}
               onChange={handleChange}
             />
 
             <Input
               name="contact"
               placeholder="Contact"
+              value={form.contact}
               onChange={handleChange}
             />
 
@@ -214,8 +219,17 @@ export default function AddEmployeePage() {
             </Select>
 
             <div className="flex justify-center gap-3 pt-6">
+
               <Button type="submit" size="sm">
                 Add
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleReset}
+              >
+                Reset
               </Button>
               <Button
                 type="button"

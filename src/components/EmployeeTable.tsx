@@ -160,7 +160,7 @@ export default function EmployeeTable() {
               <TableRow key={emp.employeeId}>
                 <TableCell className="text-center border border-gray-300">
                   <Link
-                    href={`/employees/${emp._id}`}
+                    href={`/employees/${emp.employeeId}`}
                     className="text-blue-600 underline"
                   >
                     {emp.employeeId}
@@ -186,7 +186,7 @@ export default function EmployeeTable() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/employees/edit/${emp._id}`}
+                          href={`/employees/edit/${emp.employeeId}`}
                           className="flex items-center gap-2"
                         >
                           <FiEdit className="h-4 w-4 text-black" />
