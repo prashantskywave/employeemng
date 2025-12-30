@@ -185,7 +185,8 @@ export default function EditEmployeePage({
                   name="employeeId"
                   value={form.employeeId}
                   onChange={handleChange}
-                  className={inputClass}
+                  disabled
+                  className={`${inputClass} bg-gray-100 cursor-not-allowed`}
                 />
               </div>
 
@@ -271,9 +272,10 @@ export default function EditEmployeePage({
                   type="date"
                   name="joiningDate"
                   value={form.joiningDate}
-                  min={today}   
+                  min={today}
                   onChange={handleChange}
-                  className={inputClass}
+                  disabled
+                  className={`${inputClass} bg-gray-100 cursor-not-allowed`}
                 />
               </div>
 

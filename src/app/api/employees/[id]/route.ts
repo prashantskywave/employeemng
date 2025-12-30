@@ -14,7 +14,7 @@ export async function GET(
     return NextResponse.json({ message: "ID not provided" }, { status: 400 });
   }
 
-  const employee = await Employee.findById(id);
+  const employee = await Employee.findOne({ employeeId: id })
 
   if (!employee) {
     return NextResponse.json({ message: "Employee not found" }, { status: 404 });
@@ -31,7 +31,7 @@ export async function PUT(
   const { id } = await context.params;
   const body = await req.json();
 
-  const updatedEmployee = await Employee.findByIdAndUpdate(id, body, {
+  const updatedEmployee = await Employee.findOneAndUpdate({ employeeId: id }, body, {
     new: true,
     runValidators: true,
   });
@@ -54,7 +54,7 @@ export async function DELETE(
     return NextResponse.json({ message: "ID not provided" }, { status: 400 });
   }
 
-  const deletedEmployee = await Employee.findByIdAndDelete(id);
+  const deletedEmployee = await Employee.findOneAndDelete({ employeeId: id });
 
   if (!deletedEmployee) {
     return NextResponse.json({ message: "Employee not found" }, { status: 404 });
