@@ -1,8 +1,8 @@
 export function formatEmployeeId(id: string) {
   if (id.startsWith("EMP")) return id;
 
-  const digitsOnly = id.replace(/\D/g, ""); // remove non-digits
-  const firstFour = digitsOnly.slice(0, 4);
+  const digitsOnly = id.replace(/\D/g, ""); 
+  const lastFour = digitsOnly.slice(-4);
 
-  return `EMP${firstFour.padStart(4, "0")}`;
+  return `EMP${lastFour.padStart(4, "0")}`;
 }
