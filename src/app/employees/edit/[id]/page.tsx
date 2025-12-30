@@ -7,7 +7,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatEmployeeId } from '@/utils/formatEmployeeId';
+import { formatEmployeeId } from "@/utils/formatEmployeeId";
 import {
   Select,
   SelectContent,
@@ -74,28 +74,80 @@ export default function EditEmployeePage({
   }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  if (name === "employeeId") {
-    setForm({ ...form, employeeId: formatEmployeeId(value) });
-  } else {
-    setForm({ ...form, [name]: value });
-  }
-};
+    if (name === "employeeId") {
+      setForm({ ...form, employeeId: formatEmployeeId(value) });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+
+    for (const [key, value] of Object.entries(form)) {
+      if (!value.trim()) {
+        toast.error(`Please fill the ${key} field`, { position: "top-center" });
+        return;
+      }
+    }
+
+    const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
+    if (!nameRegex.test(form.name.trim())) {
+      toast.error(
+        "Name must contain only string and each word should start with a capital letter",
+        { position: "top-center" }
+      );
+      return;
+    }
+
+    const emailRegex =
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(form.email.trim())) {
+      toast.error(
+        "Email must include at least one number and one special character",
+        { position: "top-center" }
+      );
+      return;
+    }
+    const contactRegex = /^[0-9]{10}$/;
+    if (!contactRegex.test(form.contact.trim())) {
+      toast.error("Contact must contain only 10 digits and only number consider", {
+        position: "top-center",
+      });
+      return;
+    }
+
     try {
-      await fetch(`/api/employees/${id}`, {
+      const res = await fetch(`/api/employees/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
-      toast.success("Employee updated successfully");
-      router.push("/employees");
+      if (res.ok) {
+        toast.success("Employee updated successfully", {
+          position: "top-center",
+        });
+        router.push("/employees");
+      } else {
+        const data = await res.json();
+
+        if (
+          data?.error?.toLowerCase().includes("duplicate") ||
+          data?.message?.toLowerCase().includes("already exists")
+        ) {
+          toast.error("Employee ID already exists", {
+            position: "top-center",
+          });
+        } else {
+          toast.error("Update failed", { position: "top-center" });
+        }
+      }
     } catch {
-      toast.error("Update failed");
+      toast.error("Something went wrong", { position: "top-center" });
     }
   };
 
@@ -121,7 +173,6 @@ export default function EditEmployeePage({
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <Label className="text-sm text-gray-600">Employee ID</Label>
@@ -239,13 +290,12 @@ export default function EditEmployeePage({
               </div>
             </div>
 
-           <div className="flex gap-4 justify-center pt-4">
+            <div className="flex gap-4 justify-center pt-4">
               <Button type="submit">Save</Button>
               <Button variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
             </div>
-
           </form>
         </CardContent>
       </Card>

@@ -1,17 +1,19 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { BiDetail } from "react-icons/bi";
+import { IoArrowBack } from "react-icons/io5";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Employee {
   _id: string;
-  employeeId: string; 
+  employeeId: string;
   name: string;
   email: string;
   contact: string;
   department: string;
   role: string;
   joiningDate: string;
-  status: string; 
+  status: string;
 }
 
 function formatDate(date: string) {
@@ -42,12 +44,21 @@ export default async function EmployeeDetails({
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-3xl shadow-sm">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-xl font-semibold">
             <BiDetail className="text-blue-500 text-2xl" />
             Employee Details
           </CardTitle>
+
+          <Link
+            href="/employees"
+            className="flex items-center gap-1 text-black hover:underline"
+          >
+            <IoArrowBack className="text-lg" />
+            Back
+          </Link>
         </CardHeader>
+
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>

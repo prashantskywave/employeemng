@@ -56,9 +56,7 @@ export default function Filters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Frontend Developer">
-              Frontend Developer
-            </SelectItem>
+            <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
             <SelectItem value="HR">HR</SelectItem>
             <SelectItem value="Accountant">Accountant</SelectItem>
           </SelectContent>
@@ -82,7 +80,7 @@ export default function Filters({
       <Button
         variant="default"
         onClick={() => router.push("/employees/add")}
-        className="h-8"
+        className="h-8 cursor-pointer"
       >
         + Add Employee
       </Button>
