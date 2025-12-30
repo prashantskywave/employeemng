@@ -18,6 +18,8 @@ import toast, { Toaster } from "react-hot-toast";
 export default function AddEmployeePage() {
   const router = useRouter();
 
+  const today = new Date().toISOString().split("T")[0];
+
   const [form, setForm] = useState({
     employeeId: "",
     name: "",
@@ -72,9 +74,10 @@ export default function AddEmployeePage() {
 
     const contactRegex = /^[0-9]{10}$/;
     if (!contactRegex.test(form.contact.trim())) {
-      toast.error("Contact must contain only 10 digits and only number consider", {
-        position: "top-center",
-      });
+      toast.error(
+        "Contact must contain only 10 digits and only number consider",
+        { position: "top-center" }
+      );
       return;
     }
 
@@ -122,10 +125,7 @@ export default function AddEmployeePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <Toaster
-        position="top-center"
-        toastOptions={{ style: { textAlign: "center" } }}
-      />
+      <Toaster position="top-center" />
 
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-right">
@@ -182,13 +182,23 @@ export default function AddEmployeePage() {
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+                <SelectItem value="Frontend Developer">
+                  Frontend Developer
+                </SelectItem>
                 <SelectItem value="HR">HR</SelectItem>
                 <SelectItem value="Accountant">Accountant</SelectItem>
               </SelectContent>
             </Select>
 
-            <Input type="date" name="joiningDate" onChange={handleChange} />
+            <Input
+              type="date"
+              name="joiningDate"
+              value={form.joiningDate}
+              min={today}
+              onChange={(e) =>
+                setForm({ ...form, joiningDate: e.target.value })
+              }
+            />
 
             <Select
               value={form.status}

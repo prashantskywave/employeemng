@@ -33,6 +33,8 @@ export default function EditEmployeePage({
   const router = useRouter();
   const { id } = use(params);
 
+  const today = new Date().toISOString().split("T")[0];
+
   const [form, setForm] = useState({
     employeeId: "",
     name: "",
@@ -86,10 +88,11 @@ export default function EditEmployeePage({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
     for (const [key, value] of Object.entries(form)) {
       if (!value.trim()) {
-        toast.error(`Please fill the ${key} field`, { position: "top-center" });
+        toast.error(`Please fill the ${key} field`, {
+          position: "top-center",
+        });
         return;
       }
     }
@@ -112,11 +115,13 @@ export default function EditEmployeePage({
       );
       return;
     }
+
     const contactRegex = /^[0-9]{10}$/;
     if (!contactRegex.test(form.contact.trim())) {
-      toast.error("Contact must contain only 10 digits and only number consider", {
-        position: "top-center",
-      });
+      toast.error(
+        "Contact must contain only 10 digits and only number consider",
+        { position: "top-center" }
+      );
       return;
     }
 
@@ -266,6 +271,7 @@ export default function EditEmployeePage({
                   type="date"
                   name="joiningDate"
                   value={form.joiningDate}
+                  min={today}   
                   onChange={handleChange}
                   className={inputClass}
                 />
@@ -292,7 +298,12 @@ export default function EditEmployeePage({
 
             <div className="flex gap-4 justify-center pt-4">
               <Button type="submit">Save</Button>
-              <Button variant="outline" onClick={() => router.back()}>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
                 Cancel
               </Button>
             </div>
