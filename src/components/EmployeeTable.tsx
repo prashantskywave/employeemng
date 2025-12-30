@@ -241,7 +241,6 @@ export default function EmployeeTable() {
                 </PaginationItem>
               )
             )}
-
             <PaginationItem>
               <PaginationNext
                 onClick={() =>
