@@ -157,7 +157,7 @@ export default function EmployeeTable() {
         <TableBody>
           {paginatedEmployees.length ? (
             paginatedEmployees.map((emp) => (
-              <TableRow key={emp._id}>
+              <TableRow key={emp.employeeId}>
                 <TableCell className="text-center border border-gray-300">
                   <Link
                     href={`/employees/${emp._id}`}

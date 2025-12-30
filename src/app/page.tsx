@@ -1,4 +1,11 @@
 import EmployeeTableClient from "@/components/EmployeeTableClient";
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "HRMS",
+  description:
+    "Manage employees, departments, roles, and status efficiently using the Employee Management System.",
+};
+
 
 export default function HomePage() {
   return (
