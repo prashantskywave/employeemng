@@ -10,8 +10,6 @@ router.post("/", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
-
 router.get("/", async (req, res) => {
   try {
     const { search, department, designation, status } = req.query;
@@ -32,7 +30,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router.get("/:id", async (req, res) => {
   try {
     const employee = await EmployeeModel.findById(req.params.id);
@@ -44,7 +41,6 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 
 router.put("/:id", async (req, res) => {
   try {
@@ -62,7 +58,6 @@ router.put("/:id", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
 
 router.patch("/:id/status", async (req, res) => {
   try {
@@ -84,7 +79,6 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-
 router.delete("/:id", async (req, res) => {
   try {
     await EmployeeModel.findByIdAndDelete(req.params.id);
@@ -94,4 +88,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+//module.exports = router;

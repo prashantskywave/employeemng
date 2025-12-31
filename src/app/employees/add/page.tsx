@@ -223,14 +223,7 @@ export default function AddEmployeePage() {
               <Button type="submit" size="sm">
                 Add
               </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={handleReset}
-              >
-                Reset
-              </Button>
+              
               <Button
                 type="button"
                 variant="outline"
