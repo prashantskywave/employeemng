@@ -7,8 +7,21 @@ export async function fetchEmployees(): Promise<Employee[]> {
   if (!res.ok) throw new Error("Failed to fetch employees");
   return res.json();
 }
-export async function deleteEmployee(id: string) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
+export const deleteEmployee = async (
+  id: string,
+  reason: string
+) => {
+  const res = await fetch(`/api/employees/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ reason }),
   });
-}
+
+  if (!res.ok) {
+    throw new Error("Delete failed");
+  }
+  console.log("Deleting employee:", id, reason);
+
+};

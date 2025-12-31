@@ -47,19 +47,45 @@ export async function DELETE(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  try{
   await connectDB();
+  const { reason } = await req.json();
   const { id } = await context.params;
+
+  if (!reason) {
+    return NextResponse.json(
+      { message: "Delete reason required" },
+      { status: 400 }
+    );
+  }
 
   if (!id) {
     return NextResponse.json({ message: "ID not provided" }, { status: 400 });
   }
 
-  const deletedEmployee = await Employee.findOneAndDelete({ employeeId: id });
+  const employee = await Employee.findOneAndUpdate(
+    { employeeId: id },
+    {
+      isDeleted: true,
+      deleteReason: reason,
+      deletedAt: new Date(),
+    },
+    { new: true }
+  );
 
-  if (!deletedEmployee) {
-    return NextResponse.json({ message: "Employee not found" }, { status: 404 });
+  if (!employee) {
+    return NextResponse.json(
+      { message: "Employee not found" },
+      { status: 404 }
+    );
   }
 
-  return NextResponse.json({ message: "Employee deleted permanently" }, { status: 200 });
+  return NextResponse.json({ message: "Employee deleted successfully" }, { status: 200 });
+}catch (error) {
+    return NextResponse.json(
+      { error: "Failed to delete employee" },
+      { status: 500 }
+    );
+  }
 }
 

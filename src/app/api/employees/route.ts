@@ -6,7 +6,10 @@ import Employee from "@/models/Employee";
 export async function GET() {
   try {
     await connectDB();
-    const employees = await Employee.find().sort({ createdAt: -1 });
+    const employees = await Employee.find({
+      isDeleted: false,
+    }).sort({ createdAt: -1 });
+    
     return NextResponse.json(employees);
   } catch (error) {
     return NextResponse.json(

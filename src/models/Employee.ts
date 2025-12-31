@@ -9,6 +9,10 @@ export interface EmployeeDocument {
   role: string;
   joiningDate: Date;
   status: "Active" | "Inactive";
+
+  isDeleted?: boolean;
+  deleteReason?: string | null;
+  deletedAt?: Date | null;
 }
 
 const employeeSchema = new Schema<EmployeeDocument>(
@@ -48,6 +52,16 @@ const employeeSchema = new Schema<EmployeeDocument>(
       type: String,
       enum: ["Active", "Inactive"],
       default: "Active",
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deleteReason: {
+    type: String,
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }
