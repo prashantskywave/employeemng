@@ -30,23 +30,36 @@ export default function AddEmployeePage() {
     status: "",
   };
 
-
   const [form, setForm] = useState(initialForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-
   };
+
   const handleReset = () => {
     setForm(initialForm);
   };
 
+  const capitalizeName = (name: string) => {
+    return name
+      .toLowerCase()
+      .split(" ")
+      .filter(Boolean)
+      .map(
+        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+      )
+      .join(" ");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    for (const [key, value] of Object.entries(form)) {
+    const formattedName = capitalizeName(form.name);
+    const updatedForm = { ...form, name: formattedName };
+    setForm(updatedForm);
+
+    for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
         toast.error(`Please fill the ${key} field`, {
           position: "top-center",
@@ -56,7 +69,7 @@ export default function AddEmployeePage() {
     }
 
     const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-    if (!nameRegex.test(form.name.trim())) {
+    if (!nameRegex.test(formattedName)) {
       toast.error(
         "Name must contain only string and each word should start with a capital letter",
         { position: "top-center" }
@@ -64,18 +77,17 @@ export default function AddEmployeePage() {
       return;
     }
 
-    const emailRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    if (!emailRegex.test(form.email.trim())) {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(updatedForm.email.trim())) {
       toast.error(
-        "Email must include at least one number and one special character",
+        "Email must include @ and only one dot after @",
         { position: "top-center" }
       );
       return;
     }
 
     const contactRegex = /^[0-9]{10}$/;
-    if (!contactRegex.test(form.contact.trim())) {
+    if (!contactRegex.test(updatedForm.contact.trim())) {
       toast.error(
         "Contact must contain only 10 digits and only number consider",
         { position: "top-center" }
@@ -87,7 +99,7 @@ export default function AddEmployeePage() {
       const res = await fetch("/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedForm),
       });
 
       if (res.ok) {
@@ -139,7 +151,6 @@ export default function AddEmployeePage() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <Input
               name="name"
               placeholder="Name"
@@ -172,7 +183,9 @@ export default function AddEmployeePage() {
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Human Resources">Human Resources</SelectItem>
+                <SelectItem value="Human Resources">
+                  Human Resources
+                </SelectItem>
                 <SelectItem value="Finance">Finance</SelectItem>
                 <SelectItem value="Engineering">Engineering</SelectItem>
                 <SelectItem value="Manager">Manager</SelectItem>
@@ -181,7 +194,9 @@ export default function AddEmployeePage() {
 
             <Select
               value={form.role}
-              onValueChange={(value) => setForm({ ...form, role: value })}
+              onValueChange={(value) =>
+                setForm({ ...form, role: value })
+              }
             >
               <SelectTrigger className={selectInputLike}>
                 <SelectValue placeholder="Role" />
@@ -207,7 +222,9 @@ export default function AddEmployeePage() {
 
             <Select
               value={form.status}
-              onValueChange={(value) => setForm({ ...form, status: value })}
+              onValueChange={(value) =>
+                setForm({ ...form, status: value })
+              }
             >
               <SelectTrigger className={selectInputLike}>
                 <SelectValue placeholder="Status" />
@@ -219,11 +236,10 @@ export default function AddEmployeePage() {
             </Select>
 
             <div className="flex justify-center gap-3 pt-6">
-
               <Button type="submit" size="sm">
                 Add
               </Button>
-              
+
               <Button
                 type="button"
                 variant="outline"

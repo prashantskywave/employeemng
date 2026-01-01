@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
@@ -85,10 +84,25 @@ export default function EditEmployeePage({
     }
   };
 
+  const capitalizeName = (name: string) => {
+    return name
+      .toLowerCase()
+      .split(" ")
+      .filter(Boolean)
+      .map(
+        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+      )
+      .join(" ");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    for (const [key, value] of Object.entries(form)) {
+    const formattedName = capitalizeName(form.name);
+    const updatedForm = { ...form, name: formattedName };
+    setForm(updatedForm);
+
+    for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
         toast.error(`Please fill the ${key} field`, {
           position: "top-center",
@@ -98,7 +112,7 @@ export default function EditEmployeePage({
     }
 
     const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-    if (!nameRegex.test(form.name.trim())) {
+    if (!nameRegex.test(formattedName)) {
       toast.error(
         "Name must contain only string and each word should start with a capital letter",
         { position: "top-center" }
@@ -106,18 +120,17 @@ export default function EditEmployeePage({
       return;
     }
 
-    const emailRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    if (!emailRegex.test(form.email.trim())) {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(updatedForm.email.trim())) {
       toast.error(
-        "Email must include at least one number and one special character",
+        "Email must include @ and only one dot after @",
         { position: "top-center" }
       );
       return;
     }
 
     const contactRegex = /^[0-9]{10}$/;
-    if (!contactRegex.test(form.contact.trim())) {
+    if (!contactRegex.test(updatedForm.contact.trim())) {
       toast.error(
         "Contact must contain only 10 digits and only number consider",
         { position: "top-center" }
@@ -129,7 +142,7 @@ export default function EditEmployeePage({
       const res = await fetch(`/api/employees/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedForm),
       });
 
       if (res.ok) {
