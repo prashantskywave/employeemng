@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Employee from "@/models/Employee";
-
+import { getNextEmployeeId } from "@/lib/getNextEmployeeId";
 
 export async function GET() {
   try {
@@ -24,29 +24,10 @@ export async function POST(request: Request) {
     await connectDB();
     const body = await request.json();
 
-    const lastEmployee = await Employee.aggregate([
-      {
-        $project: {
-          number: {
-            $toInt: {
-              $substr: ["$employeeId", 3, 10], 
-            },
-          },
-        },
-      },
-      { $sort: { number: -1 } },
-      { $limit: 1 },
-    ]);
-
-    let nextNumber = 1;
-
-    if (lastEmployee.length > 0) {
-      nextNumber = lastEmployee[0].number + 1;
-    }
-    const nextEmployeeId = `EMP${String(nextNumber).padStart(4, "0")}`;
+    const employeeId = await getNextEmployeeId();
 
     const employee = await Employee.create({
-      employeeId: nextEmployeeId,
+      employeeId,
       name: body.name,
       email: body.email,
       contact: body.contact,
@@ -64,5 +45,7 @@ export async function POST(request: Request) {
     );
   }
 }
+
+
 
 
