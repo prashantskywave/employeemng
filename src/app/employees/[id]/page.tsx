@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BiDetail } from "react-icons/bi";
 import { IoArrowBack } from "react-icons/io5";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { headers } from "next/headers";
 
 interface Employee {
   _id: string;
@@ -32,10 +33,15 @@ export default async function EmployeeDetails({
   const { id } = await params;
   if (!id) notFound();
 
-  const res = await fetch(
-    `http://127.0.0.1:3000/api/employees/${id}`,
-    { cache: "no-store" }
-  );
+
+  const host = (await headers()).get("host");
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+
+  const res = await fetch(`${protocol}://${host}/api/employees/${id}`, {
+    cache: "no-store",
+  });
+
+
 
   if (!res.ok) notFound();
 
