@@ -39,6 +39,15 @@ import {
   PaginationPrevious,
 } from "./ui/pagination";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
@@ -47,10 +56,6 @@ export default function EmployeeTable() {
   const [status, setStatus] = useState("all");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [deleteReason, setDeleteReason] = useState("");
-  const [deleteEmployeeId, setDeleteEmployeeId] = useState<string | null>(null);
-
 
   const itemsPerPage = 5;
   const menuRef = useRef<HTMLTableCellElement | null>(null);
@@ -78,69 +83,81 @@ export default function EmployeeTable() {
   }, []);
 
   const handleDelete = (employeeId: string) => {
-    setDeleteEmployeeId(employeeId);
-    setDeleteReason("");
+    let reason = "Select Reason";
 
     toast(
-      (t) => {
-        const [reason, setReason] = useState<string>("");
-        return (
-          <div className="w-[320px] space-y-4">
-            <div className="space-y-1 text-sm text-gray-700">
-              <p className="font-medium">
-                Are you sure you want to delete this employee?
-              </p>
-              <p className="text-gray-500">
-                Select a reason before deleting.
-              </p>
-            </div>
-            <select
-              className="border rounded px-2 py-1"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
+      (t) => (
+        <div className="w-[320px] space-y-4">
+          <div className="space-y-1 text-sm text-gray-700">
+            <p className="font-medium">
+              Are you sure you want to delete this employee?
+            </p>
+            <p className="text-gray-500">
+              Select a reason before deleting.
+            </p>
+          </div>
+          <Select defaultValue="Select Reason"
+            onValueChange={(value) => (reason = value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select reason" />
+            </SelectTrigger>
+
+            <SelectContent
+              side="bottom"
+              sideOffset={6}
+              className="z-[9999]">
+              <SelectItem value="Select Reason">Select Reason</SelectItem>
+              <SelectItem value="Terminate">Terminate</SelectItem>
+              <SelectItem value="Resigned">Resigned</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => toast.dismiss(t.id)}
             >
-              <option value="" disabled hidden>
-                Select reason
-              </option>
+              Cancel
+            </Button>
 
-              <option value="Terminate">Terminate</option>
-              <option value="Any Reason">Any Reason</option>
-            </select>
-
-            <div className="flex justify-end gap-2">
-              <Button
-                className="bg-gray-200 text-xs px-2 py-1 rounded bg-gray-500"
-                onClick={() => toast.dismiss(t.id)}
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={!reason}
-                className={`px-2 py-1 text-xs rounded text-white ${reason
+            <Button
+              size="sm"
+              disabled={
+                reason !== "Terminate" && reason !== "Resigned"
+              }
+              className={`${reason === "Terminate" || reason === "Resigned"
                   ? "bg-red-600 hover:bg-red-700"
                   : "bg-red-300 cursor-not-allowed"
-                  }`}
-                onClick={async () => {
-                  try {
-                    await deleteEmployee(employeeId, reason);
+                }`}
+              onClick={async () => {
+                if (reason !== "Terminate" &&
+                  reason !== "Resigned") {
+                  toast.error("Please select a reason");
+                  return;
+                }
 
-                    setEmployees((prev) =>
-                      prev.filter((emp) => emp.employeeId !== employeeId)
-                    );
-                    toast.success("Employee deleted successfully");
-                  } catch {
-                    toast.error("Failed to delete employee");
-                  } finally {
-                    toast.dismiss(t.id);
-                  }
-                }}
-              >
-                Delete
-              </Button>
-            </div>
+                try {
+                  await deleteEmployee(employeeId, reason);
+
+                  setEmployees((prev) =>
+                    prev.filter((emp) => emp.employeeId !== employeeId)
+                  );
+
+                  toast.success("Employee deleted successfully");
+                } catch {
+                  toast.error("Failed to delete employee");
+                } finally {
+                  toast.dismiss(t.id);
+                }
+              }}
+            >
+              Delete
+            </Button>
           </div>
-        );
-      },
+        </div>
+      ),
+
       { duration: Infinity }
     );
   };

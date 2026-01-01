@@ -67,6 +67,7 @@ export async function DELETE(
     { employeeId: id },
     {
       isDeleted: true,
+      status: "Inactive",
       deleteReason: reason,
       deletedAt: new Date(),
     },
