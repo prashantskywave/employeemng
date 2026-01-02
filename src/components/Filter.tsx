@@ -35,14 +35,14 @@ export default function Filters({
     setDepartment("all");
     setRole("all");
     setStatus("all");
-
     router.refresh();
   };
 
+  const showRefresh = department !== "all" || role !== "all" || status !== "all";
+
   return (
     <div className="flex items-center justify-between mb-3">
-
-      <div className="flex items-center gap-8 mb-4 flex-nowrap">
+      <div className="flex items-center gap-8 flex-nowrap">
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Department</Label>
           <Select value={department} onValueChange={setDepartment}>
@@ -86,17 +86,20 @@ export default function Filters({
               <SelectItem value="Inactive">Inactive</SelectItem>
             </SelectContent>
           </Select>
-        </div>
 
-        <Button
-          variant="outline"
-          onClick={handleRefresh}
-          className="h-8 cursor-pointer flex items-center gap-1"
-        >
-          Data Refresh
-          <IoMdRefresh className="text-base" />
-        </Button>
+          {showRefresh && (
+            <Button
+              variant="outline"
+              onClick={handleRefresh}
+              className="flex items-center gap-2"
+            >
+              Data Refresh
+              <IoMdRefresh className="text-base" />
+            </Button>
+          )}
+        </div>
       </div>
+
       <Button
         variant="default"
         onClick={() => router.push("/employees/add")}
@@ -104,6 +107,6 @@ export default function Filters({
       >
         + Add Employee
       </Button>
-    </div >
+    </div>
   );
 }

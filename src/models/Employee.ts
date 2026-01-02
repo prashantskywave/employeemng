@@ -4,7 +4,7 @@ export interface EmployeeDocument {
   employeeId: string;
   name: string;
   email?: string;
-  password: string;
+  password: string; 
   contact?: string;
   department: string;
   role: string;
@@ -34,11 +34,9 @@ const employeeSchema = new Schema<EmployeeDocument>(
       lowercase: true,
     },
     password: {
-      type: String,
+      type: String, 
       required: true,
-      select: false,
     },
-
     contact: {
       type: String,
       trim: true,

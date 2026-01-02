@@ -95,11 +95,11 @@ export default function AddEmployeePage() {
 
     const password = updatedForm.password.replace(/\s/g, '');
     const confirmPassword = updatedForm.confirmPassword.replace(/\s/g, '');
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&#])[A-Za-z0-9@$!%*?&#]{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&#])[A-Za-z0-9@$!%*?&#]{8,}$/;
 
     if (!passwordRegex.test(password)) {
       toast.error(
-        "Password must be at least 6 characters and include 1 uppercase letter, 1 number, and 1 special character",
+        "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character",
         { position: "top-center" }
       );
       return;
@@ -136,7 +136,7 @@ export default function AddEmployeePage() {
           style: { textAlign: "center" },
         });
         setForm(initialForm);
-        router.push("/");
+        router.push("/employees");
       } else {
         const data = await res.json();
 
