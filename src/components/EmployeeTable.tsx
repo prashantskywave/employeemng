@@ -47,6 +47,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+
+
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -127,8 +135,8 @@ export default function EmployeeTable() {
                 reason !== "Terminate" && reason !== "Resigned"
               }
               className={`${reason === "Terminate" || reason === "Resigned"
-                  ? "bg-red-600 hover:bg-red-700"
-                  : "bg-red-300 cursor-not-allowed"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-red-300 cursor-not-allowed"
                 }`}
               onClick={async () => {
                 if (reason !== "Terminate" &&
@@ -186,131 +194,134 @@ export default function EmployeeTable() {
     <div className="space-y-4">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <SearchFilter onSearch={setSearch} />
+      <Card className="border border-gray-200 shadow-sm">
+        <CardContent className="space-y-4 pt-6">
 
-      <Filters
-        department={department}
-        role={role}
-        status={status}
-        setDepartment={setDepartment}
-        setRole={setRole}
-        setStatus={setStatus}
-      />
+          <SearchFilter onSearch={setSearch} />
 
-      <Table className="w-full border border-gray-300 border-collapse rounded-md">
-        <TableHeader>
-          <TableRow className="bg-muted">
-            <TableHead className="p-2 border text-center">Employee ID</TableHead>
-            <TableHead className="p-2 border text-center">Name</TableHead>
-            <TableHead className="p-2 border text-center">Department</TableHead>
-            <TableHead className="p-2 border text-center">Role</TableHead>
-            <TableHead className="p-2 border text-center">Status</TableHead>
-            <TableHead className="p-2 border text-center">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
+          <Filters
+            department={department}
+            role={role}
+            status={status}
+            setDepartment={setDepartment}
+            setRole={setRole}
+            setStatus={setStatus}
+          />
 
-        <TableBody>
-          {paginatedEmployees.length ? (
-            paginatedEmployees.map((emp) => (
-              <TableRow key={emp.employeeId}>
-                <TableCell className="text-center">
-                  <Link
-                    href={`/employees/${emp.employeeId}`}
-                    className="text-blue-600 underline"
-                  >
-                    {emp.employeeId}
-                  </Link>
-                </TableCell>
-
-                <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
-                <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
-                <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
-
-                <TableCell className="text-center border border-gray-300">
-                  <Status status={emp.status} />
-                </TableCell>
-
-                <TableCell className="text-center border border-gray-300">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/employees/edit/${emp.employeeId}`}
-                          className="flex items-center gap-2"
-                        >
-                          <FiEdit className="h-4 w-4 text-black" />
-                          Edit
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        className="flex items-center gap-2 text-red-600"
-                        onClick={() => handleDelete(emp.employeeId)}
-                      >
-                        <FiTrash2 className="h-4 w-4 text-red-600" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-
-                  </DropdownMenu>
-                </TableCell>
+          <Table className="w-full border border-gray-300 border-collapse rounded-md">
+            <TableHeader>
+              <TableRow className="bg-muted">
+                <TableHead className="p-2 border text-center">Employee ID</TableHead>
+                <TableHead className="p-2 border text-center">Name</TableHead>
+                <TableHead className="p-2 border text-center">Department</TableHead>
+                <TableHead className="p-2 border text-center">Role</TableHead>
+                <TableHead className="p-2 border text-center">Status</TableHead>
+                <TableHead className="p-2 border text-center">Actions</TableHead>
               </TableRow>
-            ))
-          ) : (
-            <TableRow className="hover:bg-muted/50">
-              <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                No employees found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
 
-      {totalPages > 1 && (
-        <Pagination className="mt-6">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() =>
-                  setCurrentPage((p) => Math.max(p - 1, 1))
-                }
-                aria-disabled={currentPage === 1}
-              />
-            </PaginationItem>
+            <TableBody>
+              {paginatedEmployees.length ? (
+                paginatedEmployees.map((emp) => (
+                  <TableRow key={emp.employeeId}>
+                    <TableCell className="text-center">
+                      <Link
+                        href={`/employees/${emp.employeeId}`}
+                        className="text-blue-600 underline"
+                      >
+                        {emp.employeeId}
+                      </Link>
+                    </TableCell>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    isActive={currentPage === page}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </PaginationLink>
+                    <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
+                    <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
+                    <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
+
+                    <TableCell className="text-center border border-gray-300">
+                      <Status status={emp.status} />
+                    </TableCell>
+
+                    <TableCell className="text-center border border-gray-300">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href={`/employees/edit/${emp.employeeId}`}
+                              className="flex items-center gap-2"
+                            >
+                              <FiEdit className="h-4 w-4 text-black" />
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuItem
+                            className="flex items-center gap-2 text-red-600"
+                            onClick={() => handleDelete(emp.employeeId)}
+                          >
+                            <FiTrash2 className="h-4 w-4 text-red-600" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="hover:bg-muted/50">
+                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                    No employees found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+
+          {totalPages > 1 && (
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setCurrentPage((p) => Math.max(p - 1, 1))
+                    }
+                    aria-disabled={currentPage === 1}
+                  />
                 </PaginationItem>
-              )
-            )}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  setCurrentPage((p) =>
-                    Math.min(p + 1, totalPages)
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        isActive={currentPage === page}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
                   )
-                }
-                aria-disabled={currentPage === totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-
-
-      )}
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((p) =>
+                        Math.min(p + 1, totalPages)
+                      )
+                    }
+                    aria-disabled={currentPage === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
