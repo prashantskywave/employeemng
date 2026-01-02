@@ -7,7 +7,6 @@ export const initEmployeeCounter = async () => {
     ? parseInt(lastEmployee.employeeId.replace("EMP", ""))
     : 0;
 
-  // Build-safe workaround: cast Counter as any
   await (Counter as any).findOneAndUpdate(
     { name: "employee" },
     { seq: lastSeq },

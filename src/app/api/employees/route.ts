@@ -8,7 +8,7 @@ export async function GET() {
     await connectDB();
     const employees = await Employee.find({
       isDeleted: false,
-    }).sort({ createdAt: -1 });
+    }).sort({ employeeId: 1 });
     
     return NextResponse.json(employees);
   } catch (error) {
