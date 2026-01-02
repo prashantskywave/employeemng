@@ -14,6 +14,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import toast, { Toaster } from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 
 export default function AddEmployeePage() {
   const router = useRouter();
@@ -23,6 +25,8 @@ export default function AddEmployeePage() {
   const initialForm = {
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     contact: "",
     department: "",
     role: "",
@@ -31,6 +35,9 @@ export default function AddEmployeePage() {
   };
 
   const [form, setForm] = useState(initialForm);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -86,6 +93,25 @@ export default function AddEmployeePage() {
       return;
     }
 
+    const password = updatedForm.password.replace(/\s/g, '');
+    const confirmPassword = updatedForm.confirmPassword.replace(/\s/g, '');
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&#])[A-Za-z0-9@$!%*?&#]{6,}$/;
+
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must be at least 6 characters and include 1 uppercase letter, 1 number, and 1 special character",
+        { position: "top-center" }
+      );
+      return;
+    }
+
+
+    if (password !== confirmPassword) {
+      toast.error("Password and Confirm Password do not match", { position: "top-center" });
+      return;
+    }
+
+
     const contactRegex = /^[0-9]{10}$/;
     if (!contactRegex.test(updatedForm.contact.trim())) {
       toast.error(
@@ -96,10 +122,12 @@ export default function AddEmployeePage() {
     }
 
     try {
+      const { confirmPassword, ...payload } = updatedForm;
+
       const res = await fetch("/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedForm),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -165,6 +193,48 @@ export default function AddEmployeePage() {
               value={form.email}
               onChange={handleChange}
             />
+
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                className="pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </button>
+            </div>
+
+            <div className="relative">
+              <Input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                className="pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+              </button>
+            </div>
 
             <Input
               name="contact"

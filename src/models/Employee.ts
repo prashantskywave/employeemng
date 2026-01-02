@@ -4,6 +4,7 @@ export interface EmployeeDocument {
   employeeId: string;
   name: string;
   email?: string;
+  password: string;
   contact?: string;
   department: string;
   role: string;
@@ -32,6 +33,12 @@ const employeeSchema = new Schema<EmployeeDocument>(
       trim: true,
       lowercase: true,
     },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
     contact: {
       type: String,
       trim: true,
@@ -58,7 +65,7 @@ const employeeSchema = new Schema<EmployeeDocument>(
       default: false,
     },
     deleteReason: {
-    type: String,
+      type: String,
     },
     deletedAt: {
       type: Date,

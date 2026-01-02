@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Employee from "@/models/Employee";
 import { getNextEmployeeId } from "@/lib/getNextEmployeeId";
+import bcrypt from "bcryptjs";
+
 
 export async function GET() {
   try {
@@ -9,7 +11,7 @@ export async function GET() {
     const employees = await Employee.find({
       isDeleted: false,
     }).sort({ employeeId: 1 });
-    
+
     return NextResponse.json(employees);
   } catch (error) {
     return NextResponse.json(
@@ -26,10 +28,14 @@ export async function POST(request: Request) {
 
     const employeeId = await getNextEmployeeId();
 
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+
+
     const employee = await Employee.create({
       employeeId,
       name: body.name,
       email: body.email,
+      password: hashedPassword,
       contact: body.contact,
       department: body.department,
       role: body.role,
