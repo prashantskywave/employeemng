@@ -17,25 +17,28 @@ export const authOptions: AuthOptions = {
         await connectDB();
 
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("INVALID_CREDENTIALS");
+          return null;
         }
 
-        const user = await Employee.findOne({ email: credentials.email });
+        const user = await Employee.findOne({
+          email: credentials.email,
+        });
+
         if (!user) {
-          throw new Error("INVALID_CREDENTIALS");
+          return null;
         }
 
-        if ((user as any).status !== "Active") {
-          throw new Error("USER_INACTIVE");
+        if (user.status !== "Active") {
+          return null;
         }
 
-        const isPasswordCorrect = await bcrypt.compare(
+        const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
-        if (!isPasswordCorrect) {
-          throw new Error("INVALID_CREDENTIALS");
+        if (!isPasswordValid) {
+          return null;
         }
 
         return {
@@ -54,9 +57,11 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/login",
     error: "/login",
-
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
+
