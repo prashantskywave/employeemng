@@ -149,7 +149,7 @@ export default function EditEmployeePage({
         toast.success("Employee updated successfully", {
           position: "top-center",
         });
-        router.push("/");
+        router.push("/employees");
       } else {
         const data = await res.json();
 
