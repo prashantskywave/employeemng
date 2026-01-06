@@ -45,6 +45,7 @@ export default function Filters({
     "HR",
     "Accountant",
     "Project Manager",
+    "Team Lead",
   ];
 
   const availableRoles =
