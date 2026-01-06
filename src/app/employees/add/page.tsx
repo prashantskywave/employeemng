@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import toast, { Toaster } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { departmentRoles } from "@/utils/departmentRoles";
+
 
 
 export default function AddEmployeePage() {
@@ -38,6 +40,11 @@ export default function AddEmployeePage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+
+  const availableRoles =
+    form.department && departmentRoles[form.department]
+      ? departmentRoles[form.department]
+      : [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -246,14 +253,18 @@ export default function AddEmployeePage() {
             <Select
               value={form.department}
               onValueChange={(value) =>
-                setForm({ ...form, department: value })
+                setForm({
+                  ...form,
+                  department: value,
+                  role: "",
+                })
               }
             >
               <SelectTrigger className={selectInputLike}>
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Human Resources">
+                <SelectItem value="HumanResources">
                   Human Resources
                 </SelectItem>
                 <SelectItem value="Finance">Finance</SelectItem>
@@ -267,16 +278,17 @@ export default function AddEmployeePage() {
               onValueChange={(value) =>
                 setForm({ ...form, role: value })
               }
+              disabled={!form.department}
             >
               <SelectTrigger className={selectInputLike}>
-                <SelectValue placeholder="Role" />
+                <SelectValue placeholder={"Role"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Frontend Developer">
-                  Frontend Developer
-                </SelectItem>
-                <SelectItem value="HR">HR</SelectItem>
-                <SelectItem value="Accountant">Accountant</SelectItem>
+                {availableRoles.map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 

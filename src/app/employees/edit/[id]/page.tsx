@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatEmployeeId } from "@/utils/formatEmployeeId";
+import { departmentRoles } from "@/utils/departmentRoles";
 import {
   Select,
   SelectContent,
@@ -73,6 +74,11 @@ export default function EditEmployeePage({
 
     fetchEmployee();
   }, [id]);
+
+  const availableRoles =
+    form.department && departmentRoles[form.department]
+      ? departmentRoles[form.department]
+      : [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -243,14 +249,18 @@ export default function EditEmployeePage({
                 <Select
                   value={form.department}
                   onValueChange={(value) =>
-                    setForm({ ...form, department: value })
+                    setForm({
+                      ...form,
+                      department: value,
+                      role: "",
+                    })
                   }
                 >
                   <SelectTrigger className={selectInputLike}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Human Resources">Human Resources</SelectItem>
+                    <SelectItem value="HumanResources">Human Resources</SelectItem>
                     <SelectItem value="Finance">Finance</SelectItem>
                     <SelectItem value="Engineering">Engineering</SelectItem>
                     <SelectItem value="Manager">Manager</SelectItem>
@@ -261,18 +271,22 @@ export default function EditEmployeePage({
               <div className="flex flex-col gap-1">
                 <Label className="text-sm text-gray-600">Role</Label>
                 <Select
+                  key={form.department}
                   value={form.role}
                   onValueChange={(value) =>
                     setForm({ ...form, role: value })
                   }
+                  disabled={!availableRoles.length}
                 >
                   <SelectTrigger className={selectInputLike}>
-                    <SelectValue />
+                    <SelectValue placeholder="Select role"/>
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
-                    <SelectItem value="HR">HR</SelectItem>
-                    <SelectItem value="Accountant">Accountant</SelectItem>
+                   <SelectContent>
+                    {availableRoles.map((role) => (
+                      <SelectItem key={role} value={role}>
+                        {role}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

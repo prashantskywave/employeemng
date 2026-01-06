@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { IoMdRefresh } from "react-icons/io";
+import { departmentRoles } from "@/utils/departmentRoles";
 
 interface FiltersProps {
   department: string;
@@ -38,6 +39,20 @@ export default function Filters({
     router.refresh();
   };
 
+  const allRoles = [
+    "Frontend Developer",
+    "Backend Developer",
+    "HR",
+    "Accountant",
+    "Project Manager",
+  ];
+
+  const availableRoles =
+    department === "all"
+      ? allRoles
+      : departmentRoles[department] || [];
+
+
   const showRefresh = department !== "all" || role !== "all" || status !== "all";
 
   return (
@@ -45,7 +60,13 @@ export default function Filters({
       <div className="flex items-center gap-8 flex-nowrap">
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Department</Label>
-          <Select value={department} onValueChange={setDepartment}>
+          <Select
+            value={department}
+            onValueChange={(value) => {
+              setDepartment(value);
+              setRole("all");
+            }}
+          >
             <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="All" />
             </SelectTrigger>
@@ -54,25 +75,36 @@ export default function Filters({
               <SelectItem value="Engineering">Engineering</SelectItem>
               <SelectItem value="Manager">Manager</SelectItem>
               <SelectItem value="Finance">Finance</SelectItem>
-              <SelectItem value="Human Resources">Human Resources</SelectItem>
+              <SelectItem value="HumanResources">Human Resources</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Role</Label>
-          <Select value={role} onValueChange={setRole}>
+
+          <Select
+            key={department} 
+            value={role}
+            onValueChange={setRole}
+            disabled={department !== "all" && availableRoles.length === 0}
+          >
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="All" />
             </SelectTrigger>
+
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
-              <SelectItem value="HR">HR</SelectItem>
-              <SelectItem value="Accountant">Accountant</SelectItem>
+
+              {availableRoles.map((role) => (
+                <SelectItem key={role} value={role}>
+                  {role}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
+
 
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Status</Label>
