@@ -5,6 +5,7 @@ import Employee from "@/models/Employee";
 import bcrypt from "bcryptjs";
 
 export const authOptions: AuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -30,7 +31,7 @@ export const authOptions: AuthOptions = {
         }
 
         const isPasswordCorrect = await bcrypt.compare(
-          credentials.password,
+          credentials.password.trim(),
           user.password
         );
 
