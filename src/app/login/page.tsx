@@ -41,7 +41,7 @@ export default function HomePage() {
             toast.success("Login successful");
             router.push("/employees");
         } else {
-            toast.error("This employee account is inactive. Please contact HR or your administrator for assistance.");
+            toast.error(res?.error || "Invalid email or password");
         }
     };
     return (

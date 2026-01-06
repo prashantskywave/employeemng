@@ -17,7 +17,7 @@ export const authOptions: AuthOptions = {
         await connectDB();
 
         if (!credentials?.email || !credentials?.password) {
-          return null;
+         throw new Error("Email and password are required");
         }
 
         const user = await Employee.findOne({
@@ -25,11 +25,11 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user) {
-          return null;
+          throw new Error("User not found");
         }
 
         if (user.status !== "Active") {
-          return null;
+          throw new Error("This employee account is inactive");
         }
 
         const isPasswordValid = await bcrypt.compare(
@@ -38,7 +38,7 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isPasswordValid) {
-          return null;
+          throw new Error("Invalid password");
         }
 
         return {
