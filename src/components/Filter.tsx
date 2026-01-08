@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { IoMdRefresh } from "react-icons/io";
 import { departmentRoles } from "@/utils/departmentRoles";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 interface FiltersProps {
   department: string;
@@ -31,12 +33,26 @@ export default function Filters({
   setStatus,
 }: FiltersProps) {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const userDepartment = session?.user?.department;
+  const isAdmin = userDepartment === "Admin";
 
   const handleRefresh = () => {
     setDepartment("all");
     setRole("all");
     setStatus("all");
     router.refresh();
+  };
+
+  const handleAddEmployee = () => {
+    if (!isAdmin) {
+      toast.error(
+        "HRs don’t have permission to add employees. Please contact Admin."
+      );
+      return;
+    }
+    router.push("/employees/add");
   };
 
   const allRoles = [
@@ -76,16 +92,17 @@ export default function Filters({
               <SelectItem value="Engineering">Engineering</SelectItem>
               <SelectItem value="Manager">Manager</SelectItem>
               <SelectItem value="Finance">Finance</SelectItem>
-              <SelectItem value="HumanResources">Human Resources</SelectItem>
+              <SelectItem value="HumanResources">
+                Human Resources
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Role</Label>
-
           <Select
-            key={department} 
+            key={department}
             value={role}
             onValueChange={setRole}
             disabled={department !== "all" && availableRoles.length === 0}
@@ -93,10 +110,8 @@ export default function Filters({
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="All" />
             </SelectTrigger>
-
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-
               {availableRoles.map((role) => (
                 <SelectItem key={role} value={role}>
                   {role}
@@ -133,13 +148,36 @@ export default function Filters({
         </div>
       </div>
 
-      <Button
-        variant="default"
-        onClick={() => router.push("/employees/add")}
-        className="h-8 bg-black text-white hover:bg-black/90"
+      <div
+        onMouseEnter={() => {
+          if (!isAdmin) {
+            toast.dismiss("add-employee-permission");
+            toast(
+              "Don’t have permission to add employees. Please contact Admin.",
+              {
+                id: "add-employee-permission",
+                icon: "⚠️",
+                duration: Infinity,
+              }
+            );
+          }
+        }}
+        onMouseLeave={() => {
+          toast.dismiss("add-employee-permission");
+        }}
       >
-        + Add Employee
-      </Button>
+        <Button
+          onClick={handleAddEmployee}
+          disabled={!isAdmin}
+          className={`h-8 text-white ${isAdmin
+              ? "bg-black hover:bg-black/90"
+              : "bg-gray-400 cursor-not-allowed"
+            }`}
+        >
+          + Add Employee
+        </Button>
+      </div>
+
     </div>
   );
 }

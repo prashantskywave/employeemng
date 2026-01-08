@@ -10,6 +10,7 @@ import Link from "next/link";
 import { deleteEmployee } from "@/services/employeeApi";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 import {
   Table,
@@ -65,6 +66,14 @@ export default function EmployeeTable() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const { data: session } = useSession();
+
+  const userDepartment = session?.user?.department;
+  console.log("userDepartment", userDepartment)
+  const canManageEmployee =
+    userDepartment === "Admin" || userDepartment === "HumanResources";
+
+    console.log("canManageEmployee", canManageEmployee)
   const itemsPerPage = 5;
   const menuRef = useRef<HTMLTableCellElement | null>(null);
 
@@ -98,8 +107,8 @@ export default function EmployeeTable() {
         <div className="w-[320px] space-y-4">
           <div className="space-y-1 text-sm text-gray-700">
             <p className="font-medium">
-              Are you sure you want to delete this employee?
-            </p>
+            Are you sure you want to delete this employee?
+          </p>
             <p className="text-gray-500">
               Select a reason before deleting.
             </p>
@@ -223,53 +232,99 @@ export default function EmployeeTable() {
             <TableBody>
               {paginatedEmployees.length ? (
                 paginatedEmployees.map((emp) => (
-                  <TableRow key={emp.employeeId}>
-                    <TableCell className="text-center">
+                <TableRow key={emp.employeeId}>
+                  <TableCell className="text-center">
                       <Link
                         href={`/employees/${emp.employeeId}`}
                         className="text-blue-600 underline"
                       >
-                        {emp.employeeId}
-                      </Link>
-                    </TableCell>
+                      {emp.employeeId}
+                    </Link>
+                  </TableCell>
 
                     <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
                     <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
                     <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
 
                     <TableCell className="text-center border border-gray-300">
-                      <Status status={emp.status} />
-                    </TableCell>
+                    <Status status={emp.status} />
+                  </TableCell>
 
                     <TableCell className="text-center border border-gray-300">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/employees/edit/${emp.employeeId}`}
-                              className="flex items-center gap-2"
-                            >
-                              <FiEdit className="h-4 w-4 text-black" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-
+                      <DropdownMenuContent align="end">
+                        <div
+                          onMouseEnter={() => {
+                            if (!canManageEmployee) {
+                              toast.dismiss("edit");
+                              toast("No permission to edit employees", {
+                                id: "edit",
+                                icon: "⚠️",
+                                duration: Infinity,
+                              });
+                            }
+                          }}
+                          onMouseLeave={() => toast.dismiss("edit")}
+                        >
                           <DropdownMenuItem
-                            className="flex items-center gap-2 text-red-600"
-                            onClick={() => handleDelete(emp.employeeId)}
+                            disabled={!canManageEmployee}
+                            asChild={canManageEmployee}
+                            className={!canManageEmployee ? "opacity-50" : ""}
+                          >
+                            {canManageEmployee ? (
+                              <Link
+                                href={`/employees/edit/${emp.employeeId}`}
+                                className="flex items-center gap-2"
+                              >
+                                <FiEdit />
+                                Edit
+                              </Link>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <FiEdit />
+                                Edit
+                              </div>
+                            )}
+                          </DropdownMenuItem>
+                        </div>
+                        <div
+                          onMouseEnter={() => {
+                            if (!canManageEmployee) {
+                              toast.dismiss("delete");
+                              toast("No permission to delete employees", {
+                                id: "delete",
+                                icon: "⚠️",
+                                duration: Infinity,
+                              });
+                            }
+                          }}
+                          onMouseLeave={() => toast.dismiss("delete")}
+                        >
+                          <DropdownMenuItem
+                            disabled={!canManageEmployee}
+                            className={
+                              canManageEmployee
+                                ? "text-red-600"
+                                : "text-red-400 cursor-not-allowed"
+                            }
+                            onClick={() =>
+                              canManageEmployee &&
+                              handleDelete(emp.employeeId)
+                            }
                           >
                             <FiTrash2 className="h-4 w-4 text-red-600" />
                             Delete
                           </DropdownMenuItem>
-                        </DropdownMenuContent>
+                        </div>
 
-                      </DropdownMenu>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))
@@ -298,13 +353,13 @@ export default function EmployeeTable() {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                   (page) => (
                     <PaginationItem key={page}>
-                      <PaginationLink
+                    <PaginationLink
                         isActive={currentPage === page}
                         onClick={() => setCurrentPage(page)}
-                      >
+                    >
                         {page}
-                      </PaginationLink>
-                    </PaginationItem>
+                    </PaginationLink>
+                  </PaginationItem>
                   )
                 )}
                 <PaginationItem>
