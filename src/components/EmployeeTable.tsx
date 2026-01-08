@@ -54,6 +54,7 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
+import { canEditEmployee } from "@/lib/permission";
 
 
 
@@ -71,7 +72,7 @@ if (status === "loading") return null;
 const userDepartment = session?.user?.department?.toLowerCase() ?? "";
 
 const canManageEmployee =
-  userDepartment === "admin" || userDepartment === "humanresources";
+  userDepartment === "admin" || userDepartment === "humanresources" || userDepartment === "super_admin";
 
   const itemsPerPage = 5;
   const menuRef = useRef<HTMLTableCellElement | null>(null);
@@ -230,7 +231,12 @@ const canManageEmployee =
 
             <TableBody>
               {paginatedEmployees.length ? (
-                paginatedEmployees.map((emp) => (
+                paginatedEmployees.map((emp) => { 
+                    const canEdit = canEditEmployee(
+        userDepartment,
+        emp.department
+      );
+                  return(
                 <TableRow key={emp.employeeId}>
                   <TableCell className="text-center">
                       <Link
@@ -260,7 +266,7 @@ const canManageEmployee =
                       <DropdownMenuContent align="end">
                         <div
                           onMouseEnter={() => {
-                            if (!canManageEmployee) {
+                            if (!canEdit) {
                               toast.dismiss("edit");
                               toast("No permission to edit employees", {
                                 id: "edit",
@@ -272,11 +278,11 @@ const canManageEmployee =
                           onMouseLeave={() => toast.dismiss("edit")}
                         >
                           <DropdownMenuItem
-                            disabled={!canManageEmployee}
-                            asChild={canManageEmployee}
-                            className={!canManageEmployee ? "opacity-50" : ""}
+                            disabled={!canEdit}
+                            asChild={canEdit}
+                            className={!canEdit ? "opacity-50" : ""}
                           >
-                            {canManageEmployee ? (
+                            {canEdit ? (
                               <Link
                                 href={`/employees/edit/${emp.employeeId}`}
                                 className="flex items-center gap-2"
@@ -294,7 +300,7 @@ const canManageEmployee =
                         </div>
                         <div
                           onMouseEnter={() => {
-                            if (!canManageEmployee) {
+                            if (!canEdit) {
                               toast.dismiss("delete");
                               toast("No permission to delete employees", {
                                 id: "delete",
@@ -306,14 +312,14 @@ const canManageEmployee =
                           onMouseLeave={() => toast.dismiss("delete")}
                         >
                           <DropdownMenuItem
-                            disabled={!canManageEmployee}
+                            disabled={!canEdit}
                             className={
-                              canManageEmployee
+                              canEdit
                                 ? "text-red-600"
                                 : "text-red-400 cursor-not-allowed"
                             }
                             onClick={() =>
-                              canManageEmployee &&
+                              canEdit &&
                               handleDelete(emp.employeeId)
                             }
                           >
@@ -326,7 +332,7 @@ const canManageEmployee =
                     </DropdownMenu>
                     </TableCell>
                   </TableRow>
-                ))
+                )})
               ) : (
                 <TableRow className="hover:bg-muted/50">
                   <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">

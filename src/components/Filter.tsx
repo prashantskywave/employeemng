@@ -36,7 +36,7 @@ export default function Filters({
   const { data: session, status: sessionStatus } = useSession();
   if (status === "loading") return null;
   const userDepartment = session?.user?.department ?? "";
-  const isAdmin = userDepartment.toLowerCase() === "admin";
+  const isAdmin = userDepartment.toLowerCase() === "admin" || userDepartment.toLowerCase() === "super_admin";
 
   const handleRefresh = () => {
     setDepartment("all");

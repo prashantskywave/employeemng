@@ -1,6 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { canAccessAddEmployee, canAccessEditEmployee } from "./lib/permission";
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({
@@ -10,27 +11,20 @@ export async function middleware(req: NextRequest) {
 
   const pathname = req.nextUrl.pathname;
 
-  if (pathname.startsWith("/employees/add")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 
-    if (
-      token.department.toLowerCase() !== "admin"
-    ) {
+  const department = token.department as string | undefined;
+
+  if (pathname.startsWith("/employees/add")) {
+    if (!canAccessAddEmployee(department)) {
       return NextResponse.redirect(new URL("/employees", req.url));
     }
   }
 
-
-    if (pathname.startsWith("/employees/edit")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-
-    if (
-      token.department.toLowerCase() !== "humanresources" && token.department.toLowerCase() !== "admin"
-    ) {
+  if (pathname.startsWith("/employees/edit")) {
+    if (!canAccessEditEmployee(department)) {
       return NextResponse.redirect(new URL("/employees", req.url));
     }
   }
@@ -39,5 +33,9 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/employees/add"],
+  matcher: [
+    "/employees/add",
+    "/employees/edit/:path*",
+  ],
 };
+

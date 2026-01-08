@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaUserEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
 import { Label } from "@/components/ui/label";
 import { formatEmployeeId } from "@/utils/formatEmployeeId";
 import { departmentRoles } from "@/utils/departmentRoles";
@@ -45,6 +46,11 @@ export default function EditEmployeePage({
     joiningDate: "",
     status: "Active",
   });
+
+  const { data: session } = useSession();
+
+  const currentUserDept =
+    session?.user?.department?.toLowerCase() ?? "";
 
   const [loading, setLoading] = useState(true);
 
@@ -171,6 +177,15 @@ export default function EditEmployeePage({
     );
   }
 
+  const targetDept = form.department.toLowerCase();
+
+  const isTargetAdminOrSuperAdmin =
+    targetDept === "admin" || targetDept === "super_admin";
+
+  const disableDeptAndRole =
+    (currentUserDept === "super_admin" && isTargetAdminOrSuperAdmin) ||
+    (currentUserDept === "admin" && isTargetAdminOrSuperAdmin);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Toaster position="top-center" />
@@ -234,49 +249,69 @@ export default function EditEmployeePage({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <Label className="text-sm text-gray-600">Department</Label>
-                <Select
-                  value={form.department}
-                  onValueChange={(value) =>
-                    setForm({
-                      ...form,
-                      department: value,
-                      role: "",
-                    })
-                  }
-                >
-                  <SelectTrigger className={selectInputLike}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="HumanResources">Human Resources</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Engineering">Engineering</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
-                  </SelectContent>
-                </Select>
+                {disableDeptAndRole ? (
+                  <Input
+                    value={form.department}
+                    disabled
+                    className="bg-gray-100 cursor-not-allowed h-9 text-sm"
+                  />
+                ) : (
+                  <Select
+                    value={form.department}
+                    onValueChange={(value) =>
+                      setForm({
+                        ...form,
+                        department: value,
+                        role: "", // reset role when department changes
+                      })
+                    }
+                  >
+                    <SelectTrigger className={selectInputLike}>
+                      <SelectValue placeholder="Select department" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="HumanResources">Human Resources</SelectItem>
+                      <SelectItem value="Finance">Finance</SelectItem>
+                      <SelectItem value="Engineering">Engineering</SelectItem>
+                      <SelectItem value="Manager">Manager</SelectItem>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                      <SelectItem value="Super_Admin">Super Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
 
               <div className="flex flex-col gap-1">
                 <Label className="text-sm text-gray-600">Role</Label>
-                <Select
-                  key={form.department}
-                  value={form.role}
-                  onValueChange={(value) =>
-                    setForm({ ...form, role: value })
-                  }
-                  disabled={!availableRoles.length}
-                >
-                  <SelectTrigger className={selectInputLike}>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableRoles.map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {disableDeptAndRole ? (
+                  <Input
+                    value={form.role}
+                    disabled
+                    className="bg-gray-100 cursor-not-allowed h-9 text-sm"
+                  />
+                ) : (
+                  <Select
+                    key={form.department}
+                    value={form.role}
+                    onValueChange={(value) =>
+                      setForm({ ...form, role: value })
+                    }
+                    disabled={!availableRoles.length}
+                  >
+                    <SelectTrigger className={selectInputLike}>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {availableRoles.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
 
