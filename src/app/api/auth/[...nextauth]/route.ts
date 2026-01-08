@@ -5,58 +5,64 @@ import Employee from "@/models/Employee";
 import bcrypt from "bcryptjs";
 
 export const authOptions: AuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
+    secret: process.env.NEXTAUTH_SECRET,
+    providers: [
+        CredentialsProvider({
+            name: "Credentials",
+            credentials: {
+                email: { label: "Email", type: "text" },
+                password: { label: "Password", type: "password" },
+                role: { label: "Role", type: "role" },
+            },
 
-      async authorize(credentials) {
-        await connectDB();
+            async authorize(credentials) {
+                await connectDB();
 
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("INVALID_CREDENTIALS");
-        }
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("INVALID_CREDENTIALS");
+                }
 
-        const user = await Employee.findOne({ email: credentials.email });
-        if (!user) {
-          throw new Error("INVALID_CREDENTIALS");
-        }
+                const user = await Employee.findOne({ email: credentials.email });
+                if (!user) {
+                    throw new Error("INVALID_CREDENTIALS");
+                }
 
-        if ((user as any).status !== "Active") {
-          throw new Error("USER_INACTIVE");
-        }
 
-        const isPasswordCorrect = await bcrypt.compare(
-          credentials.password.trim(),
-          user.password
-        );
+                if (
+                    user.status !== "Active" ||
+                    !["super_admin", "admin"].includes(user.role)
+                ) {
+                    throw new Error("USER_INACTIVE");
+                }
 
-        if (!isPasswordCorrect) {
-          throw new Error("INVALID_CREDENTIALS");
-        }
+                const isPasswordCorrect = await bcrypt.compare(
+                    credentials.password.trim(),
+                    user.password
+                );
 
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-        };
-      },
-    }),
-  ],
+                if (!isPasswordCorrect) {
+                    throw new Error("INVALID_CREDENTIALS");
+                }
 
-  session: {
-    strategy: "jwt",
-  },
+                return {
+                    id: user._id.toString(),
+                    email: user.email,
+                    name: user.name,
+                    role: user.role,
+                };
+            },
+        }),
+    ],
 
-  pages: {
-    signIn: "/login",
-    error: "/login",
+    session: {
+        strategy: "jwt",
+    },
 
-  },
+    pages: {
+        signIn: "/login",
+        error: "/login",
+
+    },
 };
 
 const handler = NextAuth(authOptions);
