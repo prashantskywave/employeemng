@@ -57,7 +57,7 @@ export default async function EmployeeDetails({
           </CardTitle>
 
           <Link
-            href="/"
+            href="/employees"
             className="flex items-center gap-1 text-black hover:underline"
           >
             <IoArrowBack className="text-lg" />
