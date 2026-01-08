@@ -75,9 +75,7 @@ export default function AddEmployeePage() {
 
     for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
-        toast.error(`Please fill the ${key} field`, {
-          position: "top-center",
-        });
+        toast.error(`Please fill the ${key} field`, { position: "top-center" });
         return;
       }
     }
@@ -85,7 +83,7 @@ export default function AddEmployeePage() {
     const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
     if (!nameRegex.test(formattedName)) {
       toast.error(
-        "Name must contain only string and each word should start with a capital letter",
+        "Name must contain only letters and each word should start with a capital letter",
         { position: "top-center" }
       );
       return;
@@ -93,10 +91,7 @@ export default function AddEmployeePage() {
 
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$/;
     if (!emailRegex.test(updatedForm.email.trim())) {
-      toast.error(
-        "Email must include @ and only one dot after @",
-        { position: "top-center" }
-      );
+      toast.error("Email must include @ and a valid domain", { position: "top-center" });
       return;
     }
 
@@ -106,25 +101,20 @@ export default function AddEmployeePage() {
 
     if (!passwordRegex.test(password)) {
       toast.error(
-        "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character",
+        "Password must be at least 8 characters and include 1 uppercase, 1 number, and 1 special character",
         { position: "top-center" }
       );
       return;
     }
-
 
     if (password !== confirmPassword) {
       toast.error("Password and Confirm Password do not match", { position: "top-center" });
       return;
     }
 
-
     const contactRegex = /^[0-9]{10}$/;
     if (!contactRegex.test(updatedForm.contact.trim())) {
-      toast.error(
-        "Contact must contain only 10 digits and only number consider",
-        { position: "top-center" }
-      );
+      toast.error("Contact must be 10 digits", { position: "top-center" });
       return;
     }
 
@@ -149,9 +139,9 @@ export default function AddEmployeePage() {
 
         if (
           data?.error?.toLowerCase().includes("duplicate") ||
-          data?.message?.toLowerCase().includes("already exists")
+          data?.message?.toLowerCase().includes("email already exists")
         ) {
-          toast.error("Employee ID already exists", {
+          toast.error("Email already exists", {
             position: "top-center",
             style: { textAlign: "center" },
           });
@@ -169,6 +159,7 @@ export default function AddEmployeePage() {
       });
     }
   };
+
 
   const selectInputLike =
     "w-full border border-gray-300 rounded-md px-3 py-2 text-sm";

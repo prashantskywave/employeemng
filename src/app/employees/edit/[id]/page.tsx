@@ -110,9 +110,7 @@ export default function EditEmployeePage({
 
     for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
-        toast.error(`Please fill the ${key} field`, {
-          position: "top-center",
-        });
+        toast.error(`Please fill the ${key} field`, { position: "top-center" });
         return;
       }
     }
@@ -128,19 +126,13 @@ export default function EditEmployeePage({
 
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$/;
     if (!emailRegex.test(updatedForm.email.trim())) {
-      toast.error(
-        "Email must include @ and only one dot after @",
-        { position: "top-center" }
-      );
+      toast.error("Email must include @ and a valid domain", { position: "top-center" });
       return;
     }
 
     const contactRegex = /^[0-9]{10}$/;
     if (!contactRegex.test(updatedForm.contact.trim())) {
-      toast.error(
-        "Contact must contain only 10 digits and only number consider",
-        { position: "top-center" }
-      );
+      toast.error("Contact must contain only 10 digits", { position: "top-center" });
       return;
     }
 
@@ -152,20 +144,16 @@ export default function EditEmployeePage({
       });
 
       if (res.ok) {
-        toast.success("Employee updated successfully", {
-          position: "top-center",
-        });
+        toast.success("Employee updated successfully", { position: "top-center" });
         router.push("/employees");
       } else {
         const data = await res.json();
 
         if (
           data?.error?.toLowerCase().includes("duplicate") ||
-          data?.message?.toLowerCase().includes("already exists")
+          data?.message?.toLowerCase().includes("email already exists")
         ) {
-          toast.error("Employee ID already exists", {
-            position: "top-center",
-          });
+          toast.error("Email already exists", { position: "top-center" });
         } else {
           toast.error("Update failed", { position: "top-center" });
         }
@@ -279,9 +267,9 @@ export default function EditEmployeePage({
                   disabled={!availableRoles.length}
                 >
                   <SelectTrigger className={selectInputLike}>
-                    <SelectValue placeholder="Select role"/>
+                    <SelectValue placeholder="Select role" />
                   </SelectTrigger>
-                   <SelectContent>
+                  <SelectContent>
                     {availableRoles.map((role) => (
                       <SelectItem key={role} value={role}>
                         {role}
