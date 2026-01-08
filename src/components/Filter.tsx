@@ -33,9 +33,9 @@ export default function Filters({
   setStatus,
 }: FiltersProps) {
   const router = useRouter();
-  const { data: session } = useSession();
-
-  const userDepartment = session?.user?.department;
+  const { data: session, status: sessionStatus } = useSession();
+  if (status === "loading") return null;
+  const userDepartment = session?.user?.department ?? "";
   const isAdmin = userDepartment.toLowerCase() === "admin";
 
   const handleRefresh = () => {

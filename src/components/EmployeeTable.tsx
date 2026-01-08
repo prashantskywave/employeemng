@@ -66,12 +66,12 @@ export default function EmployeeTable() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: session } = useSession();
+const { data: session, status: sessionStatus } = useSession();
+if (status === "loading") return null;
+const userDepartment = session?.user?.department?.toLowerCase() ?? "";
 
-  const userDepartment = session?.user?.department;
-  console.log("userDepartment", userDepartment)
-  const canManageEmployee =
-    userDepartment.toLowerCase() === "admin" || userDepartment.toLowerCase() === "humanresources";
+const canManageEmployee =
+  userDepartment === "admin" || userDepartment === "humanresources";
 
   const itemsPerPage = 5;
   const menuRef = useRef<HTMLTableCellElement | null>(null);
