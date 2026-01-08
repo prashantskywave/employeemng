@@ -15,6 +15,7 @@ export const authOptions: AuthOptions = {
                 role: { label: "Role", type: "role" },
             },
 
+
             async authorize(credentials) {
                 await connectDB();
 
@@ -27,11 +28,8 @@ export const authOptions: AuthOptions = {
                     throw new Error("INVALID_CREDENTIALS");
                 }
 
-
-                if (
-                    user.status !== "Active" ||
-                    !["super_admin", "admin"].includes(user.role)
-                ) {
+                const status = user.status?.toLowerCase().trim();
+                if (status !== "active") {
                     throw new Error("USER_INACTIVE");
                 }
 
@@ -49,8 +47,12 @@ export const authOptions: AuthOptions = {
                     email: user.email,
                     name: user.name,
                     role: user.role,
+                    department: user.department,
                 };
-            },
+            }
+
+
+
         }),
     ],
 
