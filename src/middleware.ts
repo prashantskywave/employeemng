@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (
-      token.department !== "admin"
+      token.department.toLowerCase() !== "admin"
     ) {
       return NextResponse.redirect(new URL("/employees", req.url));
     }
@@ -29,7 +29,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (
-      token.department !== "HumanResources" && token.department !== "Admin"
+      token.department.toLowerCase() !== "humanresources" && token.department.toLowerCase() !== "admin"
     ) {
       return NextResponse.redirect(new URL("/employees", req.url));
     }

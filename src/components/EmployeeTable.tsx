@@ -71,9 +71,8 @@ export default function EmployeeTable() {
   const userDepartment = session?.user?.department;
   console.log("userDepartment", userDepartment)
   const canManageEmployee =
-    userDepartment === "Admin" || userDepartment === "HumanResources";
+    userDepartment.toLocaleLowerCase() === "admin" || userDepartment.toLocaleLowerCase() === "humanresources";
 
-    console.log("canManageEmployee", canManageEmployee)
   const itemsPerPage = 5;
   const menuRef = useRef<HTMLTableCellElement | null>(null);
 
