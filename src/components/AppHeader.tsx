@@ -24,7 +24,7 @@ export default function AppHeader() {
         {open && (
           <div className="absolute right-0 mt-2 w-56 bg-white border rounded-md shadow-md p-3">
             <p className="text-sm font-semibold mb-2 text-gray-800">
-              Add Profile
+               Profile
             </p>
 
             <p className="text-sm font-medium text-gray-700">
@@ -33,6 +33,7 @@ export default function AppHeader() {
 
             <p className="text-xs text-gray-500 mb-3">
               {session?.user?.role}
+          
             </p>
 
             <Button

@@ -1,9 +1,22 @@
-import { Badge } from "@/components/ui/badge";
 
-export default function Status({ status }: { status: string }) {
+"use client";
+
+interface StatusProps {
+  status: string;
+}
+
+export default function Status({ status }: StatusProps) {
+  const isActive = status.toLowerCase() === "active";
+
   return (
-    <Badge variant={status === "Active" ? "default" : "secondary"}>
+    <span
+      className={`px-3 py-1 rounded-full text-xs font-medium
+        ${isActive
+          ? "bg-green-700 text-white"
+          : "bg-red-700 text-white"}
+      `}
+    >
       {status}
-    </Badge>
+    </span>
   );
 }
