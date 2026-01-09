@@ -4,20 +4,13 @@ import Employee from "@/models/Employee";
 import { getNextEmployeeId } from "@/lib/getNextEmployeeId";
 import bcrypt from "bcryptjs";
 
-
 export async function GET() {
   try {
     await connectDB();
-    const employees = await Employee.find({
-      isDeleted: false,
-    }).sort({ employeeId: 1 });
-
+    const employees = await Employee.find({ isDeleted: false }).sort({ employeeId: 1 });
     return NextResponse.json(employees);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch employees" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch employees" }, { status: 500 });
   }
 }
 
@@ -26,10 +19,16 @@ export async function POST(request: Request) {
     await connectDB();
     const body = await request.json();
 
+    const existingEmployee = await Employee.findOne({ email: body.email.trim() });
+    if (existingEmployee) {
+      return NextResponse.json(
+        { error: "Email already exists" },
+        { status: 400 }
+      );
+    }
+
     const employeeId = await getNextEmployeeId();
-
     const hashedPassword = await bcrypt.hash(body.password, 10);
-
 
     const employee = await Employee.create({
       employeeId,
@@ -51,7 +50,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-
-
-

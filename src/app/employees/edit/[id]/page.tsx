@@ -157,11 +157,15 @@ export default function EditEmployeePage({
 
         if (
           data?.error?.toLowerCase().includes("duplicate") ||
-          data?.message?.toLowerCase().includes("email already exists")
+          data?.message?.toLowerCase().includes("email")
         ) {
-          toast.error("Email already exists", { position: "top-center" });
+          toast.error("Email already exists. Please use another email.", {
+            position: "top-center",
+          });
         } else {
-          toast.error("Update failed", { position: "top-center" });
+          toast.error("Update failed", {
+            position: "top-center",
+          });
         }
       }
     } catch {
