@@ -266,7 +266,7 @@ export default function EditEmployeePage({
                       setForm({
                         ...form,
                         department: value,
-                        role: "", // reset role when department changes
+                        role: "",
                       })
                     }
                   >
@@ -279,8 +279,7 @@ export default function EditEmployeePage({
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Engineering">Engineering</SelectItem>
                       <SelectItem value="Manager">Manager</SelectItem>
-                      <SelectItem value="Admin">Admin</SelectItem>
-                      <SelectItem value="Super_Admin">Super Admin</SelectItem>
+                      {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="Admin">Admin</SelectItem> : null}
                     </SelectContent>
                   </Select>
                 )}

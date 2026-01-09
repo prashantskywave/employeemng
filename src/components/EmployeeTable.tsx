@@ -11,7 +11,7 @@ import { deleteEmployee } from "@/services/employeeApi";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
-
+import { ChevronDown } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -67,15 +67,37 @@ export default function EmployeeTable() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-const { data: session, status: sessionStatus } = useSession();
-if (status === "loading") return null;
-const userDepartment = session?.user?.department?.toLowerCase() ?? "";
+  const { data: session, status: sessionStatus } = useSession();
+  if (status === "loading") return null;
+  const userDepartment = session?.user?.department?.toLowerCase() ?? "";
 
-const canManageEmployee =
-  userDepartment === "admin" || userDepartment === "humanresources" || userDepartment === "super_admin";
+  const canManageEmployee =
+    userDepartment === "admin" || userDepartment === "humanresources" || userDepartment === "super_admin";
 
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
   const menuRef = useRef<HTMLTableCellElement | null>(null);
+  const MAX_VISIBLE_PAGES = 5;
+
+  const getVisiblePages = () => {
+    if (totalPages <= MAX_VISIBLE_PAGES) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const half = Math.floor(MAX_VISIBLE_PAGES / 2);
+    let start = Math.max(currentPage - half, 1);
+    let end = start + MAX_VISIBLE_PAGES - 1;
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = end - MAX_VISIBLE_PAGES + 1;
+    }
+
+    return Array.from(
+      { length: end - start + 1 },
+      (_, i) => start + i
+    );
+  };
 
   useEffect(() => {
     fetchEmployees()
@@ -107,8 +129,8 @@ const canManageEmployee =
         <div className="w-[320px] space-y-4">
           <div className="space-y-1 text-sm text-gray-700">
             <p className="font-medium">
-            Are you sure you want to delete this employee?
-          </p>
+              Are you sure you want to delete this employee?
+            </p>
             <p className="text-gray-500">
               Select a reason before deleting.
             </p>
@@ -216,6 +238,49 @@ const canManageEmployee =
             setRole={setRole}
             setStatus={setStatus}
           />
+          <div className="flex items-center gap-4 text-sm">
+            <span className="font-medium">Show:</span>
+
+            <div className="flex justify-end">
+              <div className="flex items-center gap-2 text-sm">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-1 px-3"
+                    >
+                      {itemsPerPage}
+                      <ChevronDown className="h-4 w-4 opacity-60" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end" className="w-36">
+                    {[5, 10, 20, 40, 80, 100].map((count) => (
+                      <DropdownMenuItem
+                        key={count}
+                        onClick={() => setItemsPerPage(count)}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <input
+                          type="radio"
+                          checked={itemsPerPage === count}
+                          readOnly
+                          className="accent-blue-600"
+                        />
+                        <span>{count}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <span className="font-medium whitespace-nowrap">entries</span>
+              </div>
+            </div>
+
+
+          </div>
+
 
           <Table className="w-full border border-gray-300 border-collapse rounded-md">
             <TableHeader>
@@ -231,108 +296,109 @@ const canManageEmployee =
 
             <TableBody>
               {paginatedEmployees.length ? (
-                paginatedEmployees.map((emp) => { 
-                    const canEdit = canEditEmployee(
-        userDepartment,
-        emp.department
-      );
-                  return(
-                <TableRow key={emp.employeeId}>
-                  <TableCell className="text-center">
-                      <Link
-                        href={`/employees/${emp.employeeId}`}
-                        className="text-blue-600 underline"
-                      >
-                      {emp.employeeId}
-                    </Link>
-                  </TableCell>
-
-                    <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
-                    <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
-                    <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
-
-                    <TableCell className="text-center border border-gray-300">
-                    <Status status={emp.status} />
-                  </TableCell>
-
-                    <TableCell className="text-center border border-gray-300">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-
-                      <DropdownMenuContent align="end">
-                        <div
-                          onMouseEnter={() => {
-                            if (!canEdit) {
-                              toast.dismiss("edit");
-                              toast("No permission to edit employees", {
-                                id: "edit",
-                                icon: "⚠️",
-                                duration: Infinity,
-                              });
-                            }
-                          }}
-                          onMouseLeave={() => toast.dismiss("edit")}
+                paginatedEmployees.map((emp) => {
+                  const canEdit = canEditEmployee(
+                    userDepartment,
+                    emp.department
+                  );
+                  return (
+                    <TableRow key={emp.employeeId}>
+                      <TableCell className="text-center">
+                        <Link
+                          href={`/employees/${emp.employeeId}`}
+                          className="text-blue-600 underline"
                         >
-                          <DropdownMenuItem
-                            disabled={!canEdit}
-                            asChild={canEdit}
-                            className={!canEdit ? "opacity-50" : ""}
-                          >
-                            {canEdit ? (
-                              <Link
-                                href={`/employees/edit/${emp.employeeId}`}
-                                className="flex items-center gap-2"
+                          {emp.employeeId}
+                        </Link>
+                      </TableCell>
+
+                      <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
+                      <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
+                      <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
+
+                      <TableCell className="text-center border border-gray-300">
+                        <Status status={emp.status} />
+                      </TableCell>
+
+                      <TableCell className="text-center border border-gray-300">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent align="end">
+                            <div
+                              onMouseEnter={() => {
+                                if (!canEdit) {
+                                  toast.dismiss("edit");
+                                  toast("No permission to edit employees", {
+                                    id: "edit",
+                                    icon: "⚠️",
+                                    duration: Infinity,
+                                  });
+                                }
+                              }}
+                              onMouseLeave={() => toast.dismiss("edit")}
+                            >
+                              <DropdownMenuItem
+                                disabled={!canEdit}
+                                asChild={canEdit}
+                                className={!canEdit ? "opacity-50" : ""}
                               >
-                                <FiEdit />
-                                Edit
-                              </Link>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                <FiEdit />
-                                Edit
-                              </div>
-                            )}
-                          </DropdownMenuItem>
-                        </div>
-                        <div
-                          onMouseEnter={() => {
-                            if (!canEdit) {
-                              toast.dismiss("delete");
-                              toast("No permission to delete employees", {
-                                id: "delete",
-                                icon: "⚠️",
-                                duration: Infinity,
-                              });
-                            }
-                          }}
-                          onMouseLeave={() => toast.dismiss("delete")}
-                        >
-                          <DropdownMenuItem
-                            disabled={!canEdit}
-                            className={
-                              canEdit
-                                ? "text-red-600"
-                                : "text-red-400 cursor-not-allowed"
-                            }
-                            onClick={() =>
-                              canEdit &&
-                              handleDelete(emp.employeeId)
-                            }
-                          >
-                            <FiTrash2 className="h-4 w-4 text-red-600" />
-                            Delete
-                          </DropdownMenuItem>
-                        </div>
+                                {canEdit ? (
+                                  <Link
+                                    href={`/employees/edit/${emp.employeeId}`}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <FiEdit />
+                                    Edit
+                                  </Link>
+                                ) : (
+                                  <div className="flex items-center gap-2">
+                                    <FiEdit />
+                                    Edit
+                                  </div>
+                                )}
+                              </DropdownMenuItem>
+                            </div>
+                            <div
+                              onMouseEnter={() => {
+                                if (!canEdit) {
+                                  toast.dismiss("delete");
+                                  toast("No permission to delete employees", {
+                                    id: "delete",
+                                    icon: "⚠️",
+                                    duration: Infinity,
+                                  });
+                                }
+                              }}
+                              onMouseLeave={() => toast.dismiss("delete")}
+                            >
+                              <DropdownMenuItem
+                                disabled={!canEdit}
+                                className={
+                                  canEdit
+                                    ? "text-red-600"
+                                    : "text-red-400 cursor-not-allowed"
+                                }
+                                onClick={() =>
+                                  canEdit &&
+                                  handleDelete(emp.employeeId)
+                                }
+                              >
+                                <FiTrash2 className="h-4 w-4 text-red-600" />
+                                Delete
+                              </DropdownMenuItem>
+                            </div>
 
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                )})
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
               ) : (
                 <TableRow className="hover:bg-muted/50">
                   <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
@@ -343,9 +409,11 @@ const canManageEmployee =
             </TableBody>
           </Table>
 
+
           {totalPages > 1 && (
             <Pagination className="mt-6">
               <PaginationContent>
+
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() =>
@@ -355,18 +423,29 @@ const canManageEmployee =
                   />
                 </PaginationItem>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
-                    <PaginationItem key={page}>
+                {currentPage > 3 && (
+                  <PaginationItem>
+                    <span className="px-2 text-muted-foreground">…</span>
+                  </PaginationItem>
+                )}
+
+                {getVisiblePages().map((page) => (
+                  <PaginationItem key={page}>
                     <PaginationLink
-                        isActive={currentPage === page}
-                        onClick={() => setCurrentPage(page)}
+                      isActive={currentPage === page}
+                      onClick={() => setCurrentPage(page)}
                     >
-                        {page}
+                      {page}
                     </PaginationLink>
                   </PaginationItem>
-                  )
+                ))}
+
+                {currentPage < totalPages - 2 && (
+                  <PaginationItem>
+                    <span className="px-2 text-muted-foreground">…</span>
+                  </PaginationItem>
                 )}
+
                 <PaginationItem>
                   <PaginationNext
                     onClick={() =>

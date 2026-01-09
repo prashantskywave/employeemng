@@ -17,11 +17,15 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { departmentRoles } from "@/utils/departmentRoles";
+import { useSession } from "next-auth/react";
 
 export default function AddEmployeePage() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
+  const { data: session } = useSession();
 
+  const currentUserDept =
+    session?.user?.department?.toLowerCase() ?? "";
   const initialForm = {
     name: "",
     email: "",
@@ -230,6 +234,7 @@ return (
               <SelectItem value="Finance">Finance</SelectItem>
               <SelectItem value="Engineering">Engineering</SelectItem>
               <SelectItem value="Manager">Manager</SelectItem>
+              {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="Admin">Admin</SelectItem> : null}
             </SelectContent>
           </Select>
 
