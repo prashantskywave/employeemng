@@ -50,9 +50,6 @@ export const authOptions: AuthOptions = {
           department: user.department,
         };
       }
-
-
-
     }),
   ],
 
@@ -60,22 +57,22 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-  async jwt({ token, user }) {
-    if (user) {
-      token.role = (user as any).role;           
-      token.department = (user as any).department;
-    }
-    return token;
-  },
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role;
+        token.department = (user as any).department;
+      }
+      return token;
+    },
 
-  async session({ session, token }) {
-    if (session.user) {
-      session.user.role = token.role as string; 
-      session.user.department = token.department as string;
-    }
-    return session;
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role as string;
+        session.user.department = token.department as string;
+      }
+      return session;
+    },
   },
-},
 
   pages: {
     signIn: "/login",
