@@ -20,12 +20,12 @@ export const authOptions: AuthOptions = {
         await connectDB();
 
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("INVALID_CREDENTIALS");
+          throw new Error("Invalid Email or Password");
         }
 
         const user = await Employee.findOne({ email: credentials.email });
         if (!user) {
-          throw new Error("INVALID_CREDENTIALS");
+          throw new Error("Email not Found!");
         }
 
         const status = user.status?.toLowerCase().trim();
@@ -39,15 +39,19 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isPasswordCorrect) {
-          throw new Error("INVALID_CREDENTIALS");
+          throw new Error("Password is Incorrect");
         }
 
         return {
           id: user._id.toString(),
+          employeeId: user.employeeId,
           email: user.email,
           name: user.name,
+          contact: user.contact,
           role: user.role,
           department: user.department,
+          joiningDate: user.joiningDate?.toISOString(),
+          status: user.status,
         };
       }
     }),
@@ -59,16 +63,24 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.employeeId = user.employeeId;
         token.role = (user as any).role;
         token.department = (user as any).department;
+        token.contact = user.contact;
+        token.joiningDate = user.joiningDate;
+        token.status = user.status;
       }
       return token;
     },
 
     async session({ session, token }) {
       if (session.user) {
+         session.user.employeeId = token.employeeId as string;
         session.user.role = token.role as string;
         session.user.department = token.department as string;
+        session.user.contact = token.contact as string;
+        session.user.joiningDate = token.joiningDate as string;
+        session.user.status = token.status as string;
       }
       return session;
     },

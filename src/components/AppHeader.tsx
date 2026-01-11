@@ -6,8 +6,12 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { User } from "lucide-react";
+
 
 export default function AppHeader() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [logoutActive, setLogoutActive] = useState(false);
   const { data: session } = useSession();
@@ -55,7 +59,20 @@ export default function AppHeader() {
                 {session?.user?.role}
               </p>
 
-              <div className="flex justify-center">
+              <div className="flex gap-2 justify-center pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setOpen(false);
+                    router.push("/profile");
+                  }}
+                  className="flex items-center gap-1 px-3"
+                >
+                  <User className="h-4 w-4" />
+                  Profile
+                </Button>
+
                 <Button
                   variant={logoutActive ? "default" : "outline"}
                   size="sm"
@@ -63,17 +80,19 @@ export default function AppHeader() {
                     setLogoutActive(true);
                     signOut({ callbackUrl: "/login" });
                   }}
-                  className={`flex items-center gap-1 px-3 py-1 border-gray-300 ${logoutActive
-                    ? "bg-black text-white border-gray-300"
-                    : "bg-white text-black hover:bg-gray-100"
-                    }`}
+                  className={`flex items-center gap-1 px-3 ${
+                    logoutActive
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-gray-100"
+                  }`}
                 >
                   <LogOut
-                    className={`h-4 w-4 ${logoutActive ? "text-white" : "text-black"}`}
+                    className={`h-4 w-4 ${
+                      logoutActive ? "text-white" : "text-black"
+                    }`}
                   />
                   Logout
                 </Button>
-
               </div>
             </CardContent>
           </Card>

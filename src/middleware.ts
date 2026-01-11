@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { canAccessAddEmployee, canAccessEditEmployee } from "./lib/permission";
+export { default } from "next-auth/middleware";
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({
@@ -36,6 +37,7 @@ export const config = {
   matcher: [
     "/employees/add",
     "/employees/edit/:path*",
+    "/employees/profile/:path*",
   ],
 };
 
