@@ -181,14 +181,15 @@ export default function EditEmployeePage({
     );
   }
 
-  const targetDept = form.department.toLowerCase();
-
-  const isTargetAdminOrSuperAdmin =
-    targetDept === "admin" || targetDept === "super_admin";
+  const targetDept = form.department?.toLowerCase();
 
   const disableDeptAndRole =
-    (currentUserDept === "super_admin" && isTargetAdminOrSuperAdmin) ||
-    (currentUserDept === "admin" && isTargetAdminOrSuperAdmin);
+    // Admin cannot edit admin or super_admin
+    (currentUserDept === "admin" &&
+      (targetDept === "admin" || targetDept === "super_admin")) ||
+
+    // Super admin cannot edit another super_admin
+    (currentUserDept === "super_admin" && targetDept === "super_admin");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -279,7 +280,7 @@ export default function EditEmployeePage({
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Engineering">Engineering</SelectItem>
                       <SelectItem value="Manager">Manager</SelectItem>
-                      {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="Admin">Admin</SelectItem> : null}
+                      {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="admin">Admin</SelectItem> : null}
                     </SelectContent>
                   </Select>
                 )}

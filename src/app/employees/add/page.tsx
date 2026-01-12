@@ -234,7 +234,7 @@ return (
               <SelectItem value="Finance">Finance</SelectItem>
               <SelectItem value="Engineering">Engineering</SelectItem>
               <SelectItem value="Manager">Manager</SelectItem>
-              {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="Admin">Admin</SelectItem> : null}
+              {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="admin">Admin</SelectItem> : null}
             </SelectContent>
           </Select>
 

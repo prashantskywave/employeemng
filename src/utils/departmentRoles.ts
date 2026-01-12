@@ -3,6 +3,6 @@ export const departmentRoles: Record<string, string[]> = {
   Finance: ["Accountant"],
   HumanResources: ["HR"],
   Manager: ["Project Manager", "HR", "Team Lead"],
-  Admin: ["admin"],
+  admin: ["admin"],
   SuperAdmin: ["super_admin"],
 };
