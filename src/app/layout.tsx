@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/app/providers"; 
 import HeaderWrapper from "@/components/HeaderWrapper";
-import { Toaster } from "react-hot-toast";
+import ToasterProvider from "@/components/providers/ToasterProvider";
 
 export const metadata: Metadata = {
   title: "HRMS",
@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <Providers>
           <HeaderWrapper />
-          <Toaster position="top-center" reverseOrder={false} />
+          <ToasterProvider />
           {children}
         </Providers>
       </body>

@@ -151,7 +151,9 @@ export default function EditEmployeePage({
 
       if (res.ok) {
         toast.success("Employee updated successfully", { position: "top-center" });
-        router.push("/employees");
+        setTimeout(() => {
+          router.push("/employees");
+        }, 1500);
       } else {
         const data = await res.json();
 
@@ -193,8 +195,6 @@ export default function EditEmployeePage({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Toaster position="top-center" />
-
       <Card className="w-full max-w-3xl shadow-sm">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold flex items-center gap-3">

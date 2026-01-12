@@ -40,15 +40,17 @@ export default function HomePage() {
 
         if (res?.ok) {
             toast.success("Login successful");
-            router.push("/employees");
+            setTimeout(() => {
+                toast.dismiss();
+                router.push("/employees");
+            }, 800);
         } else {
             toast.error(res?.error || "Invalid email or password");
         }
     };
     return (
-        
+
         <div className="flex min-h-screen items-center justify-center bg-gray-200">
-            <Toaster position="top-center" />
             <Card className="w-96">
                 <CardHeader>
                     <CardTitle className="text-center font-bold text-xl">Login</CardTitle>
@@ -90,6 +92,6 @@ export default function HomePage() {
                 </CardContent>
             </Card>
         </div>
-    
+
     );
 }

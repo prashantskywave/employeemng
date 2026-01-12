@@ -322,82 +322,82 @@ export default function EmployeeTable() {
                       </TableCell>
 
                       {canManageEmployee && (
-                      <TableCell className="text-center border border-gray-300">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
+                        <TableCell className="text-center border border-gray-300">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
 
-                          <DropdownMenuContent align="end">
-                            <div
-                              onMouseEnter={() => {
-                                if (!canEdit) {
-                                  toast.dismiss("edit");
-                                  toast("No permission to edit employees", {
-                                    id: "edit",
-                                    icon: "⚠️",
-                                    duration: Infinity,
-                                  });
-                                }
-                              }}
-                              onMouseLeave={() => toast.dismiss("edit")}
-                            >
-                              <DropdownMenuItem
-                                disabled={!canEdit}
-                                asChild={canEdit}
-                                className={!canEdit ? "opacity-50" : ""}
+                            <DropdownMenuContent align="end">
+                              <div
+                                onMouseEnter={() => {
+                                  if (!canEdit) {
+                                    toast.dismiss("edit");
+                                    toast("No permission to edit employees", {
+                                      id: "edit",
+                                      icon: "⚠️",
+                                      duration: Infinity,
+                                    });
+                                  }
+                                }}
+                                onMouseLeave={() => toast.dismiss("edit")}
                               >
-                                {canEdit ? (
-                                  <Link
-                                    href={`/employees/edit/${emp.employeeId}`}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <FiEdit />
-                                    Edit
-                                  </Link>
-                                ) : (
-                                  <div className="flex items-center gap-2">
-                                    <FiEdit />
-                                    Edit
-                                  </div>
-                                )}
-                              </DropdownMenuItem>
-                            </div>
-                            <div
-                              onMouseEnter={() => {
-                                if (!canEdit) {
-                                  toast.dismiss("delete");
-                                  toast("No permission to delete employees", {
-                                    id: "delete",
-                                    icon: "⚠️",
-                                    duration: Infinity,
-                                  });
-                                }
-                              }}
-                              onMouseLeave={() => toast.dismiss("delete")}
-                            >
-                              <DropdownMenuItem
-                                disabled={!canEdit}
-                                className={
-                                  canEdit
-                                    ? "text-red-600"
-                                    : "text-red-400 cursor-not-allowed"
-                                }
-                                onClick={() =>
-                                  canEdit &&
-                                  handleDelete(emp.employeeId)
-                                }
+                                <DropdownMenuItem
+                                  disabled={!canEdit}
+                                  asChild={canEdit}
+                                  className={!canEdit ? "opacity-50" : ""}
+                                >
+                                  {canEdit ? (
+                                    <Link
+                                      href={`/employees/edit/${emp.employeeId}`}
+                                      className="flex items-center gap-2"
+                                    >
+                                      <FiEdit />
+                                      Edit
+                                    </Link>
+                                  ) : (
+                                    <div className="flex items-center gap-2">
+                                      <FiEdit />
+                                      Edit
+                                    </div>
+                                  )}
+                                </DropdownMenuItem>
+                              </div>
+                              <div
+                                onMouseEnter={() => {
+                                  if (!canEdit) {
+                                    toast.dismiss("delete");
+                                    toast("No permission to delete employees", {
+                                      id: "delete",
+                                      icon: "⚠️",
+                                      duration: Infinity,
+                                    });
+                                  }
+                                }}
+                                onMouseLeave={() => toast.dismiss("delete")}
                               >
-                                <FiTrash2 className="h-4 w-4 text-red-600" />
-                                Delete
-                              </DropdownMenuItem>
-                            </div>
+                                <DropdownMenuItem
+                                  disabled={!canEdit}
+                                  className={
+                                    canEdit
+                                      ? "text-red-600"
+                                      : "text-red-400 cursor-not-allowed"
+                                  }
+                                  onClick={() =>
+                                    canEdit &&
+                                    handleDelete(emp.employeeId)
+                                  }
+                                >
+                                  <FiTrash2 className="h-4 w-4 text-red-600" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </div>
 
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
                       )}
                     </TableRow>
                   )
@@ -419,10 +419,16 @@ export default function EmployeeTable() {
 
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() =>
-                      setCurrentPage((p) => Math.max(p - 1, 1))
+                    onClick={() => {
+                      if (currentPage > 1) {
+                        setCurrentPage((p) => Math.max(p - 1, 1));
+                      }
+                    }}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : ""
                     }
-                    aria-disabled={currentPage === 1}
                   />
                 </PaginationItem>
 
@@ -451,12 +457,16 @@ export default function EmployeeTable() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() =>
-                      setCurrentPage((p) =>
-                        Math.min(p + 1, totalPages)
-                      )
+                    onClick={() => {
+                      if (currentPage < totalPages) {
+                        setCurrentPage((p) => Math.min(p + 1, totalPages));
+                      }
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
                     }
-                    aria-disabled={currentPage === totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -464,6 +474,6 @@ export default function EmployeeTable() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }
