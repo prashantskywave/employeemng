@@ -9,7 +9,7 @@ import Filters from "@/components/Filter";
 import Link from "next/link";
 import { deleteEmployee } from "@/services/employeeApi";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { ChevronDown } from "lucide-react";
 import {
@@ -55,7 +55,6 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { canEditEmployee } from "@/lib/permission";
-
 
 
 export default function EmployeeTable() {
@@ -112,7 +111,7 @@ export default function EmployeeTable() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setOpenMenuId(null);
+        // setOpenMenuId(null);
       }
     };
 
@@ -223,7 +222,6 @@ export default function EmployeeTable() {
 
   return (
     <div className="space-y-4">
-      <Toaster position="top-center" reverseOrder={false} />
 
       <Card className="border border-gray-200 shadow-sm">
         <CardContent className="space-y-4 pt-6">
@@ -290,7 +288,9 @@ export default function EmployeeTable() {
                 <TableHead className="p-2 border text-center">Department</TableHead>
                 <TableHead className="p-2 border text-center">Role</TableHead>
                 <TableHead className="p-2 border text-center">Status</TableHead>
-                <TableHead className="p-2 border text-center">Actions</TableHead>
+                {canManageEmployee && (
+                  <TableHead className="p-2 border text-center">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -307,6 +307,7 @@ export default function EmployeeTable() {
                         <Link
                           href={`/employees/${emp.employeeId}`}
                           className="text-blue-600 underline"
+                          title={emp.email}
                         >
                           {emp.employeeId}
                         </Link>
@@ -320,6 +321,7 @@ export default function EmployeeTable() {
                         <Status status={emp.status} />
                       </TableCell>
 
+                      {canManageEmployee && (
                       <TableCell className="text-center border border-gray-300">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -396,6 +398,7 @@ export default function EmployeeTable() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
+                      )}
                     </TableRow>
                   )
                 })

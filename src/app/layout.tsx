@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/app/providers"; 
+import HeaderWrapper from "@/components/HeaderWrapper";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "HRMS",
@@ -17,6 +19,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const hideHeaderRoutes = ["/login"];
 
 export default function RootLayout({
   children,
@@ -29,6 +32,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <HeaderWrapper />
+          <Toaster position="top-center" reverseOrder={false} />
           {children}
         </Providers>
       </body>

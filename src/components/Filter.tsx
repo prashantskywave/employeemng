@@ -166,16 +166,17 @@ export default function Filters({
           toast.dismiss("add-employee-permission");
         }}
       >
-        <Button
-          onClick={handleAddEmployee}
-          disabled={!isAdmin}
-          className={`h-8 text-white ${isAdmin
+        {isAdmin && (
+          <Button
+            onClick={handleAddEmployee}
+            className={`h-8 text-white ${isAdmin
               ? "bg-black hover:bg-black/90"
               : "bg-gray-400 cursor-not-allowed"
-            }`}
-        >
-          + Add Employee
-        </Button>
+              }`}
+          >
+            + Add Employee
+          </Button>
+        )}
       </div>
 
     </div>

@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+
 export default function HomePage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -45,6 +46,7 @@ export default function HomePage() {
         }
     };
     return (
+        
         <div className="flex min-h-screen items-center justify-center bg-gray-200">
             <Toaster position="top-center" />
             <Card className="w-96">
@@ -88,5 +90,6 @@ export default function HomePage() {
                 </CardContent>
             </Card>
         </div>
+    
     );
 }

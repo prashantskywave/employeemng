@@ -41,13 +41,12 @@ export default async function EmployeeDetails({
     cache: "no-store",
   });
 
-
-
   if (!res.ok) notFound();
 
   const employee: Employee = await res.json();
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-3xl shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
