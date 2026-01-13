@@ -144,17 +144,20 @@ export default function AddEmployeePage() {
           toast.error("Email already exists", {
             position: "top-center",
             style: { textAlign: "center" },
+            duration: 2000,
           });
         } else {
           toast.error("Failed to add employee", {
             position: "top-center",
             style: { textAlign: "center" },
+            duration: 2000,
           });
         }
       } else {
         toast.success("Employee added successfully", {
           position: "top-center",
           style: { textAlign: "center" },
+          duration: 2000,
         });
         setForm(initialForm);
         router.push("/employees");
@@ -164,6 +167,7 @@ export default function AddEmployeePage() {
       toast.error(error.message || "Something went wrong", {
         position: "top-center",
         style: { textAlign: "center" },
+        duration: 2000,
       });
     }
   };
