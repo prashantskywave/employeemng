@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { FaUserEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +38,8 @@ export default function EditEmployeePage({
 
   const [form, setForm] = useState({
     employeeId: "",
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     contact: "",
     department: "",
@@ -63,7 +64,8 @@ export default function EditEmployeePage({
 
         setForm({
           employeeId: data.employeeId || "",
-          name: data.name || "",
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
           email: data.email || "",
           contact: data.contact || "",
           department: data.department || "",
@@ -110,9 +112,16 @@ export default function EditEmployeePage({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formattedName = capitalizeName(form.name);
-    const updatedForm = { ...form, name: formattedName };
-    setForm(updatedForm);
+    const formattedFirstName = capitalizeName(form.firstName);
+    const formattedLastName = capitalizeName(form.lastName);
+
+    const updatedForm = {
+      ...form,
+      firstName: formattedFirstName,
+      lastName: formattedLastName,
+    };
+
+    //setForm(updatedForm);
 
     for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
@@ -121,12 +130,15 @@ export default function EditEmployeePage({
       }
     }
 
-    const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-    if (!nameRegex.test(formattedName)) {
-      toast.error(
-        "Name must contain only string and each word should start with a capital letter",
-        { position: "top-center" }
-      );
+    const nameRegex = /^[A-Z][a-z]+$/;
+    if (!nameRegex.test(formattedFirstName)) {
+      toast.error("First Name must contain only string and each word should start with a capital letter",
+        { position: "top-center" });
+      return;
+    }
+    if (!nameRegex.test(formattedLastName)) {
+      toast.error("Last Name must contain only string and each word should start with a capital letter",
+        { position: "top-center" });
       return;
     }
 
@@ -218,14 +230,25 @@ export default function EditEmployeePage({
               </div>
 
               <div className="flex flex-col gap-1">
-                <Label className="text-sm text-gray-600">Name</Label>
+                <Label className="text-sm text-gray-600">First Name</Label>
                 <Input
-                  name="name"
-                  value={form.name}
+                  name="firstName"
+                  value={form.firstName}
                   onChange={handleChange}
                   className={inputClass}
                 />
               </div>
+
+              <div className="flex flex-col gap-1">
+                <Label className="text-sm text-gray-600">Last Name</Label>
+                <Input
+                  name="lastName"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -245,8 +268,13 @@ export default function EditEmployeePage({
                 <Input
                   name="contact"
                   value={form.contact}
-                  onChange={handleChange}
                   className={inputClass}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      contact: e.target.value.replace(/\D/g, ""),
+                    })
+                  }
                 />
               </div>
             </div>

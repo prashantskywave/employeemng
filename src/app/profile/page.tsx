@@ -17,6 +17,10 @@ export default function ProfilePage() {
   if (status === "loading") {
     return <div className="p-6">Loading...</div>;
   }
+  // const fullName =
+  //   session?.user?.firstName && session?.user?.lastName
+  //     ? `${session.user.firstName} ${session.user.lastName}`
+  //     : "—";
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
@@ -41,8 +45,8 @@ export default function ProfilePage() {
                 signOut({ callbackUrl: "/login" });
               }}
               className={`flex items-center gap-1 px-3 ${logoutActive
-                  ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-gray-100"
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-100"
                 }`}
             >
               <LogOut
@@ -60,8 +64,11 @@ export default function ProfilePage() {
           </p>
           <p>
             <span className="font-medium">Name:</span>{" "}
-            {session?.user?.name || "—"}
+            {session?.user?.firstName && session?.user?.lastName
+              ? `${session.user.firstName} ${session.user.lastName}`
+              : "—"}
           </p>
+
           <p>
             <span className="font-medium">Email:</span>{" "}
             {session?.user?.email || "—"}

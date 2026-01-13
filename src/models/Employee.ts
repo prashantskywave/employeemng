@@ -2,9 +2,10 @@ import mongoose, { Schema, model, models, Model } from "mongoose";
 
 export interface EmployeeDocument {
   employeeId: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email?: string;
-  password: string; 
+  password: string;
   contact?: string;
   department: string;
   role: string;
@@ -23,7 +24,12 @@ const employeeSchema = new Schema<EmployeeDocument>(
       required: true,
       unique: true,
     },
-    name: {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
       type: String,
       required: true,
       trim: true,
@@ -34,7 +40,7 @@ const employeeSchema = new Schema<EmployeeDocument>(
       lowercase: true,
     },
     password: {
-      type: String, 
+      type: String,
       required: true,
     },
     contact: {

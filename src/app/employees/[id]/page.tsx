@@ -8,7 +8,8 @@ import { headers } from "next/headers";
 interface Employee {
   _id: string;
   employeeId: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   contact: string;
   department: string;
@@ -46,7 +47,7 @@ export default async function EmployeeDetails({
   const employee: Employee = await res.json();
 
   return (
-    
+
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-3xl shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -76,13 +77,23 @@ export default async function EmployeeDetails({
             </div>
 
             <div>
-              <label className="text-sm font-medium">Name</label>
+              <label className="text-sm font-medium">First Name</label>
               <input
-                value={employee.name}
+                value={employee.firstName}
                 readOnly
                 className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
               />
             </div>
+
+            <div>
+              <label className="text-sm font-medium">Last Name</label>
+              <input
+                value={employee.lastName}
+                readOnly
+                className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
+              />
+            </div>
+
 
             <div>
               <label className="text-sm font-medium">Email</label>

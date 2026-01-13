@@ -41,12 +41,15 @@ export const authOptions: AuthOptions = {
         if (!isPasswordCorrect) {
           throw new Error("Password is Incorrect");
         }
+        // const [firstName, ...rest] = user.name.split(" ");
+        // const lastName = rest.join(" ");
 
         return {
           id: user._id.toString(),
           employeeId: user.employeeId,
           email: user.email,
-          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           contact: user.contact,
           role: user.role,
           department: user.department,
@@ -64,6 +67,8 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.employeeId = user.employeeId;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
         token.role = (user as any).role;
         token.department = (user as any).department;
         token.contact = user.contact;
@@ -75,7 +80,9 @@ export const authOptions: AuthOptions = {
 
     async session({ session, token }) {
       if (session.user) {
-         session.user.employeeId = token.employeeId as string;
+        session.user.employeeId = token.employeeId as string;
+        session.user.firstName = token.firstName as string;
+        session.user.lastName = token.lastName as string;
         session.user.role = token.role as string;
         session.user.department = token.department as string;
         session.user.contact = token.contact as string;

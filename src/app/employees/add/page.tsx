@@ -27,7 +27,8 @@ export default function AddEmployeePage() {
   const currentUserDept =
     session?.user?.department?.toLowerCase() ?? "";
   const initialForm = {
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -63,8 +64,13 @@ export default function AddEmployeePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formattedName = capitalizeName(form.name);
-    const updatedForm = { ...form, name: formattedName };
+    const formattedFirstName = capitalizeName(form.firstName);
+    const formattedLastName = capitalizeName(form.lastName);
+    const updatedForm = {
+      ...form,
+      firstName: formattedFirstName,
+      lastName: formattedLastName,
+    };
     //setForm(updatedForm);
 
     for (const [key, value] of Object.entries(updatedForm)) {
@@ -76,12 +82,14 @@ export default function AddEmployeePage() {
       }
     }
 
-    const nameRegex = /^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/;
-    if (!nameRegex.test(formattedName)) {
-      toast.error(
-        "Name must contain only letters and each word should start with a capital letter",
-        { position: "top-center" }
-      );
+    const singleNameRegex = /^[A-Z][a-z]+$/;
+    if (!singleNameRegex.test(formattedFirstName)) {
+      toast.error("Invalid first name");
+      return;
+    }
+
+    if (!singleNameRegex.test(formattedLastName)) {
+      toast.error("Invalid last name");
       return;
     }
 
@@ -188,7 +196,19 @@ export default function AddEmployeePage() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
+            <Input
+              name="firstName"
+              placeholder="First Name"
+              value={form.firstName}
+              onChange={handleChange}
+            />
+
+            <Input
+              name="lastName"
+              placeholder="Last Name"
+              value={form.lastName}
+              onChange={handleChange}
+            />
             <Input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
 
             <div className="relative">
@@ -227,7 +247,14 @@ export default function AddEmployeePage() {
               </button>
             </div>
 
-            <Input name="contact" placeholder="Contact" value={form.contact} onChange={handleChange} />
+            <Input
+              name="contact"
+              placeholder="Contact"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={form.contact}
+              onChange={handleChange}
+            />
 
             <Select
               value={form.department}

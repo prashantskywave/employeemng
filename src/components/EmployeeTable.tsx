@@ -202,8 +202,9 @@ export default function EmployeeTable() {
 
   const filteredEmployees = employees.filter((emp) => {
     const matchSearch =
-      emp.name.toLowerCase().includes(search.toLowerCase()) ||
-      emp.employeeId.includes(search);
+      `${emp.name} ${emp.employeeId}`
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
     return (
       matchSearch &&

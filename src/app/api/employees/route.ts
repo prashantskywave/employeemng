@@ -32,7 +32,8 @@ export async function POST(request: Request) {
 
     const employee = await Employee.create({
       employeeId,
-      name: body.name,
+      firstName: body.firstName,
+      lastName: body.lastName,
       email: body.email,
       password: hashedPassword,
       contact: body.contact,

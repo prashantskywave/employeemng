@@ -51,7 +51,7 @@ export default function AppHeader() {
 
               <p className="text-sm text-gray-700 mb-1">
                 <span className="font-medium text-gray-800">Name: </span>
-                {session?.user?.name}
+                {session?.user?.firstName || "—"}
               </p>
 
               <p className="text-sm text-gray-700 mb-3">
@@ -80,16 +80,14 @@ export default function AppHeader() {
                     setLogoutActive(true);
                     signOut({ callbackUrl: "/login" });
                   }}
-                  className={`flex items-center gap-1 px-3 ${
-                    logoutActive
-                      ? "bg-black text-white"
-                      : "bg-white text-black hover:bg-gray-100"
-                  }`}
+                  className={`flex items-center gap-1 px-3 ${logoutActive
+                    ? "bg-black text-white"
+                    : "bg-white text-black hover:bg-gray-100"
+                    }`}
                 >
                   <LogOut
-                    className={`h-4 w-4 ${
-                      logoutActive ? "text-white" : "text-black"
-                    }`}
+                    className={`h-4 w-4 ${logoutActive ? "text-white" : "text-black"
+                      }`}
                   />
                   Logout
                 </Button>
