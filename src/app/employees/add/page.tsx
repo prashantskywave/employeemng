@@ -134,7 +134,13 @@ export default function AddEmployeePage() {
       if (!res.ok) {
         const data = await res.json();
 
-        if (data?.error?.includes("duplicate")) {
+        const errorMessage =
+          data?.error || data?.message || "";
+
+        if (
+          errorMessage.toLowerCase().includes("duplicate") ||
+          errorMessage.toLowerCase().includes("exists")
+        ) {
           toast.error("Email already exists", {
             position: "top-center",
             style: { textAlign: "center" },
