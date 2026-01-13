@@ -202,7 +202,7 @@ export default function EmployeeTable() {
 
   const filteredEmployees = employees.filter((emp) => {
     const matchSearch =
-      `${emp.name} ${emp.employeeId}`
+      `${emp.firstName ?? ""} ${emp.lastName ?? ""} ${emp.employeeId}`
         .toLowerCase()
         .includes(search.toLowerCase());
 
@@ -322,7 +322,7 @@ export default function EmployeeTable() {
                         </Link>
                       </TableCell>
 
-                      <TableCell className="text-center border border-gray-300">{emp.name}</TableCell>
+                      <TableCell className="text-center border border-gray-300">{[emp.firstName].filter(Boolean).join(" ")}</TableCell>
                       <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
                       <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
 

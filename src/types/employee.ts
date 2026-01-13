@@ -1,10 +1,11 @@
 export interface Employee {
   _id: string;
   employeeId: string;
-  name: string;
-  email?: string;      
+  firstName: string;
+  lastName?: string;
+  email?: string;
   password: string;
-  contact?: string;    
+  contact?: string;
   department: string;
   role: string;
   joiningDate: string;
