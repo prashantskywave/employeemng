@@ -65,7 +65,7 @@ export default function AddEmployeePage() {
 
     const formattedName = capitalizeName(form.name);
     const updatedForm = { ...form, name: formattedName };
-    setForm(updatedForm);
+    //setForm(updatedForm);
 
     for (const [key, value] of Object.entries(updatedForm)) {
       if (!value.trim()) {
@@ -123,6 +123,7 @@ export default function AddEmployeePage() {
 
     try {
       const { confirmPassword, ...payload } = updatedForm;
+      payload.password = password;
 
       const res = await fetch("/api/employees", {
         method: "POST",
@@ -130,161 +131,157 @@ export default function AddEmployeePage() {
         body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
+      if (!res.ok) {
+        const data = await res.json();
+
+        if (data?.error?.includes("duplicate")) {
+          toast.error("Email already exists", {
+            position: "top-center",
+            style: { textAlign: "center" },
+          });
+        } else {
+          toast.error("Failed to add employee", {
+            position: "top-center",
+            style: { textAlign: "center" },
+          });
+        }
+      } else {
         toast.success("Employee added successfully", {
           position: "top-center",
           style: { textAlign: "center" },
         });
         setForm(initialForm);
         router.push("/employees");
-      } else {
-        const data = await res.json();
 
-        if (
-          data?.message?.toLowerCase().includes("email") ||
-          data?.error?.toLowerCase().includes("duplicate")
-        ) {
-          toast.error("Failed to employee", {
-            position: "top-center",
-            style: { textAlign: "center" },
-          });
-        } else {
-          toast.error("Email already exists", {
-            position: "top-center",
-            style: { textAlign: "center" },
-          });
-        }
-      
-
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong", {
+        position: "top-center",
+        style: { textAlign: "center" },
+      });
     }
-    } catch {
-    toast.error("Something went wrong", {
-      position: "top-center",
-      style: { textAlign: "center" },
-    });
-  }
-};
+  };
 
-const selectInputLike =
-  "w-full border border-gray-300 rounded-md px-3 py-2 text-sm";
+  const selectInputLike =
+    "w-full border border-gray-300 rounded-md px-3 py-2 text-sm";
 
-return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-    <Toaster position="top-center" />
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <Toaster position="top-center" />
 
-    <Card className="w-full max-w-2xl">
-      <CardHeader className="text-right">
-        <CardTitle className="text-2xl font-semibold flex items-center gap-3 justify-right">
-          <IoMdPersonAdd className="text-xl" /> Add Employee
-        </CardTitle>
-      </CardHeader>
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="text-right">
+          <CardTitle className="text-2xl font-semibold flex items-center gap-3 justify-right">
+            <IoMdPersonAdd className="text-xl" /> Add Employee
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
-          <Input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
+            <Input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} />
 
-          <div className="relative">
-            <Input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              </button>
+            </div>
+
+            <div className="relative">
+              <Input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              </button>
+            </div>
+
+            <Input name="contact" placeholder="Contact" value={form.contact} onChange={handleChange} />
+
+            <Select
+              value={form.department}
+              onValueChange={(value) => setForm({ ...form, department: value, role: "" })}
             >
-              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-            </button>
-          </div>
+              <SelectTrigger className={selectInputLike}>
+                <SelectValue placeholder="Department" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="HumanResources">Human Resources</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Engineering">Engineering</SelectItem>
+                <SelectItem value="Manager">Manager</SelectItem>
+                {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="admin">Admin</SelectItem> : null}
+              </SelectContent>
+            </Select>
 
-          <div className="relative">
-            <Input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
+            <Select
+              value={form.role}
+              onValueChange={(value) => setForm({ ...form, role: value })}
+              disabled={!form.department}
             >
-              {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-            </button>
-          </div>
+              <SelectTrigger className={selectInputLike}>
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableRoles.map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Input name="contact" placeholder="Contact" value={form.contact} onChange={handleChange} />
+            <Input
+              type="date"
+              name="joiningDate"
+              min={today}
+              value={form.joiningDate}
+              onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
+            />
 
-          <Select
-            value={form.department}
-            onValueChange={(value) => setForm({ ...form, department: value, role: "" })}
-          >
-            <SelectTrigger className={selectInputLike}>
-              <SelectValue placeholder="Department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="HumanResources">Human Resources</SelectItem>
-              <SelectItem value="Finance">Finance</SelectItem>
-              <SelectItem value="Engineering">Engineering</SelectItem>
-              <SelectItem value="Manager">Manager</SelectItem>
-              {currentUserDept.toLowerCase() === "super_admin" ? <SelectItem value="admin">Admin</SelectItem> : null}
-            </SelectContent>
-          </Select>
+            <Select
+              value={form.status}
+              onValueChange={(value) => setForm({ ...form, status: value })}
+            >
+              <SelectTrigger className={selectInputLike}>
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select
-            value={form.role}
-            onValueChange={(value) => setForm({ ...form, role: value })}
-            disabled={!form.department}
-          >
-            <SelectTrigger className={selectInputLike}>
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableRoles.map((role) => (
-                <SelectItem key={role} value={role}>
-                  {role}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Input
-            type="date"
-            name="joiningDate"
-            min={today}
-            value={form.joiningDate}
-            onChange={(e) => setForm({ ...form, joiningDate: e.target.value })}
-          />
-
-          <Select
-            value={form.status}
-            onValueChange={(value) => setForm({ ...form, status: value })}
-          >
-            <SelectTrigger className={selectInputLike}>
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <div className="flex justify-center gap-3 pt-6">
-            <Button type="submit" size="sm">Add</Button>
-            <Button type="button" variant="outline" size="sm" onClick={() => router.back()}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-  </div>
-);
+            <div className="flex justify-center gap-3 pt-6">
+              <Button type="submit" size="sm">Add</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => router.back()}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
