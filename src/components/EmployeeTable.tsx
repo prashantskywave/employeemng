@@ -214,6 +214,11 @@ export default function EmployeeTable() {
   });
 
   const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [itemsPerPage, filteredEmployees.length, totalPages, currentPage]);
 
   const paginatedEmployees = filteredEmployees.slice(
     (currentPage - 1) * itemsPerPage,
@@ -257,8 +262,11 @@ export default function EmployeeTable() {
                     {[5, 10, 20, 40, 80, 100].map((count) => (
                       <DropdownMenuItem
                         key={count}
-                        onClick={() => setItemsPerPage(count)}
                         className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => {
+                          setItemsPerPage(count);
+                          setCurrentPage(1);
+                        }}
                       >
                         <input
                           type="radio"
