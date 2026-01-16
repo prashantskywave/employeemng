@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Providers from "@/app/providers"; 
+import Providers from "@/app/providers";
 import HeaderWrapper from "@/components/HeaderWrapper";
+import SidebarWrapper from "@/components/SidebarWrapper";
 import ToasterProvider from "@/components/providers/ToasterProvider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import  AppSidebar  from "@/components/AppSidebar";
+import AppHeader from "@/components/AppHeader";
+import ClientLayout from "@/components/ClientLayout";
+
 
 export const metadata: Metadata = {
   title: "HRMS",
@@ -19,7 +25,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-const hideHeaderRoutes = ["/login"];
+//  const hideHeaderRoutes = ["/login"];
 
 export default function RootLayout({
   children,
@@ -27,14 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+   <html lang="en">
+      <body>
         <Providers>
-          <HeaderWrapper />
-          <ToasterProvider />
-          {children}
+          {/* CLIENT LOGIC MOVED HERE */}
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>

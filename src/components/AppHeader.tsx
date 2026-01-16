@@ -35,7 +35,7 @@ export default function AppHeader() {
   }, []);
 
   return (
-    <header className="w-full flex items-center justify-between px-4 py-3 border-b bg-white relative">
+    <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
       <h1 className="text-xl font-semibold">Employee Management</h1>
 
       <div className="relative" ref={dropdownRef}>

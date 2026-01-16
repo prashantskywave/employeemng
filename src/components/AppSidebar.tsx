@@ -1,0 +1,39 @@
+"use client";
+
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import SidebarMenu from "./sidebar-menu";
+import SidebarFooter from "./sidebar-footer";
+import clsx from "clsx";
+
+export default function AppSidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <aside
+      className={clsx(
+        "hidden md:flex h-screen bg-white border-r transition-all duration-300 flex-col",
+       collapsed ? "md:w-16" : "md:w-64"
+      )}
+    >
+      {/* Header */}
+      <div className="flex items-center gap-2 px-4 py-4 border-b">
+        <button onClick={() => setCollapsed(!collapsed)}>
+          <Menu size={20} />
+        </button>
+
+        {!collapsed && (
+          <h1 className="text-lg font-semibold">HRMS</h1>
+        )}
+      </div>
+
+      {/* Menu */}
+      <div className="flex-1">
+        <SidebarMenu collapsed={collapsed} />
+      </div>
+
+      {/* Footer */}
+      <SidebarFooter collapsed={collapsed} />
+    </aside>
+  );
+}
