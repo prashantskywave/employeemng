@@ -16,6 +16,7 @@ interface Employee {
   role: string;
   joiningDate: string;
   status: string;
+  profileImage?: string;
 }
 
 function formatDate(date: string) {
@@ -33,7 +34,6 @@ export default async function EmployeeDetails({
 }) {
   const { id } = await params;
   if (!id) notFound();
-
 
   const host = (await headers()).get("host");
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
@@ -66,6 +66,8 @@ export default async function EmployeeDetails({
         </CardHeader>
 
         <CardContent>
+
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="text-sm font-medium">Employee ID</label>
@@ -147,6 +149,24 @@ export default async function EmployeeDetails({
                 readOnly
                 className="w-full mt-1 px-3 py-2 border rounded bg-gray-50"
               />
+            </div>
+            <div className="flex justify-center mb-6">
+              {employee.profileImage ? (
+                <img
+                  src={
+                    employee.profileImage.startsWith("http")
+                      ? employee.profileImage
+                      : `${protocol}://${host}/${employee.profileImage}`
+                  }
+                  alt="Profile"
+                  className="h-28 w-28 rounded-full object-cover border"
+                />
+
+              ) : (
+                <div className="h-28 w-28 rounded-full border flex items-center justify-center text-sm text-gray-400">
+                  No Image
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

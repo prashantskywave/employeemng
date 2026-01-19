@@ -12,6 +12,7 @@ declare module "next-auth" {
       department?: string | null;
       joiningDate?: string | null;
       status?: string | null;
+      profileImage?: string; 
     };
   }
 
@@ -24,11 +25,13 @@ declare module "next-auth" {
     status?: string | null;
     role?: string | null;
     department?: string | null;
+    profileImage?: string; 
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
+    profileImage?: string; 
     role?: string | null;
     department?: string | null;
   }

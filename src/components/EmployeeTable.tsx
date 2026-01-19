@@ -111,7 +111,6 @@ export default function EmployeeTable() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        // setOpenMenuId(null);
       }
     };
 
@@ -361,15 +360,14 @@ export default function EmployeeTable() {
                                   {canEdit ? (
                                     <Link
                                       href={`/employees/edit/${emp.employeeId}`}
-                                      className="flex items-center gap-2"
-                                    >
-                                      <FiEdit />
+                                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"                                    >
+                                      <FiEdit className="text-blue-600" />
                                       Edit
                                     </Link>
                                   ) : (
                                     <div className="flex items-center gap-2">
-                                      <FiEdit />
-                                      Edit
+                                      <FiEdit className="text-gray-400" />                                     
+                                       Edit
                                     </div>
                                   )}
                                 </DropdownMenuItem>

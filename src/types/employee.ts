@@ -3,6 +3,7 @@ export interface Employee {
   employeeId: string;
   firstName: string;
   lastName?: string;
+  name: string;
   email?: string;
   password: string;
   contact?: string;
@@ -10,4 +11,6 @@ export interface Employee {
   role: string;
   joiningDate: string;
   status: "Active" | "Inactive";
+  image?: string;
+
 }

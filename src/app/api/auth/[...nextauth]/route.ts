@@ -55,6 +55,7 @@ export const authOptions: AuthOptions = {
           department: user.department,
           joiningDate: user.joiningDate?.toISOString(),
           status: user.status,
+          image: user.profileImage || "",
         };
       }
     }),
@@ -66,6 +67,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+    token.profileImage = (user as any).image; 
         token.employeeId = user.employeeId;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
@@ -88,6 +90,7 @@ export const authOptions: AuthOptions = {
         session.user.contact = token.contact as string;
         session.user.joiningDate = token.joiningDate as string;
         session.user.status = token.status as string;
+        session.user.profileImage = token.profileImage;
       }
       return session;
     },

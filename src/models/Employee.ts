@@ -11,6 +11,7 @@ export interface EmployeeDocument {
   role: string;
   joiningDate: Date;
   status: "Active" | "Inactive";
+   profileImage?: string;
 
   isDeleted?: boolean;
   deleteReason?: string | null;
@@ -64,6 +65,11 @@ const employeeSchema = new Schema<EmployeeDocument>(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
+     profileImage: {
+      type: String, 
+      default: "",
+    },
+  
     isDeleted: {
       type: Boolean,
       default: false,

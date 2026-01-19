@@ -6,6 +6,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
+import { Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { formatEmployeeId } from "@/utils/formatEmployeeId";
 import { departmentRoles } from "@/utils/departmentRoles";
@@ -46,6 +47,9 @@ export default function EditEmployeePage({
     role: "",
     joiningDate: "",
     status: "Active",
+    profileImage: null as File | null,
+    profileImageUrl: "",
+
   });
 
   const { data: session } = useSession();
@@ -54,6 +58,7 @@ export default function EditEmployeePage({
     session?.user?.department?.toLowerCase() ?? "";
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function fetchEmployee() {
@@ -62,7 +67,8 @@ export default function EditEmployeePage({
         if (!res.ok) throw new Error();
         const data = await res.json();
 
-        setForm({
+        setForm((prev) => ({
+          ...prev,
           employeeId: data.employeeId || "",
           firstName: data.firstName || "",
           lastName: data.lastName || "",
@@ -72,7 +78,9 @@ export default function EditEmployeePage({
           role: data.role || "",
           joiningDate: data.joiningDate?.split("T")[0] || "",
           status: data.status || "Active",
-        });
+          profileImageUrl: data.profileImage || "",
+
+        }));
       } catch {
         toast.error("Failed to load employee");
       } finally {
@@ -89,10 +97,12 @@ export default function EditEmployeePage({
       : [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
     if (name === "employeeId") {
       setForm({ ...form, employeeId: formatEmployeeId(value) });
+    } else if (name === "profileImage" && files) {
+      setForm({ ...form, profileImage: files[0] });
     } else {
       setForm({ ...form, [name]: value });
     }
@@ -123,10 +133,18 @@ export default function EditEmployeePage({
 
     //setForm(updatedForm);
 
+
     for (const [key, value] of Object.entries(updatedForm)) {
-      if (!value.trim()) {
-        toast.error(`Please fill the ${key} field`, { position: "top-center" });
-        return;
+      if (key === "profileImage") continue;
+
+      if (typeof value === "string") {
+        if (value.trim() === "") {
+          toast.error(`Please fill the ${key} field`, {
+            position: "top-center",
+          });
+          setSaving(false);
+          return;
+        }
       }
     }
 
@@ -198,11 +216,9 @@ export default function EditEmployeePage({
   const targetDept = form.department?.toLowerCase();
 
   const disableDeptAndRole =
-    // Admin cannot edit admin or super_admin
     (currentUserDept === "admin" &&
       (targetDept === "admin" || targetDept === "super_admin")) ||
 
-    // Super admin cannot edit another super_admin
     (currentUserDept === "super_admin" && targetDept === "super_admin");
 
   return (
@@ -379,10 +395,49 @@ export default function EditEmployeePage({
                 </Select>
               </div>
             </div>
+            <div className="flex flex-col gap-1">
+              <Label className="text-sm text-gray-600">Profile Image</Label>
+
+              <label className="h-24 w-24 rounded-full border overflow-hidden flex items-center justify-center cursor-pointer">
+                {form.profileImage ? (
+                  <img
+                    src={URL.createObjectURL(form.profileImage)}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : form.profileImageUrl ? (
+                  <img
+                    src={form.profileImageUrl}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-400">No Image</span>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) =>
+                    setForm({ ...form, profileImage: e.target.files?.[0] || null })
+                  }
+                />
+              </label>
+            </div>
+
 
             <div className="flex gap-4 justify-center pt-4">
-              <Button type="submit">Save</Button>
-
+              <Button type="submit" disabled={saving}>
+                {saving ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save"
+                )}
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -391,9 +446,11 @@ export default function EditEmployeePage({
                 Cancel
               </Button>
             </div>
+
           </form>
+
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }
