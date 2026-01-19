@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChangePassword from "./change-password";
 import { Button } from "@/components/ui/button";
-import { LogOut, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [logoutActive, setLogoutActive] = useState(false);
 
   if (status === "loading") {
     return <div className="p-6">Loading...</div>;
@@ -32,25 +31,6 @@ export default function ProfilePage() {
             >
               <ArrowLeft className="h-4 w-4" />
               Back
-            </Button>
-
-            <Button
-              variant={logoutActive ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setLogoutActive(true);
-                signOut({ callbackUrl: "/login" });
-              }}
-              className={`flex items-center gap-1 px-3 ${logoutActive
-                  ? "bg-black text-white"
-                  : "bg-white text-black hover:bg-gray-100"
-                }`}
-            >
-              <LogOut
-                className={`h-4 w-4 ${logoutActive ? "text-white" : "text-black"
-                  }`}
-              />
-              Logout
             </Button>
           </div>
         </CardHeader>

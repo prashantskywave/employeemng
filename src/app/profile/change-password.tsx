@@ -47,8 +47,8 @@ export default function ChangePassword() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mb-2  max-w-md">
-      <div>
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+      <div className="flex flex-col gap-1.5">
         <Label>Current Password</Label>
         <Input
           type="password"
@@ -59,7 +59,7 @@ export default function ChangePassword() {
         />
       </div>
 
-      <div>
+      <div className="flex flex-col gap-1.5">
         <Label>New Password</Label>
         <Input
           type="password"
@@ -70,7 +70,7 @@ export default function ChangePassword() {
         />
       </div>
 
-      <div>
+      <div className="flex flex-col gap-1.5">
         <Label>Confirm Password</Label>
         <Input
           type="password"

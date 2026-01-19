@@ -55,7 +55,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { canEditEmployee } from "@/lib/permission";
-
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipArrow } from "@radix-ui/react-tooltip";
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -308,13 +308,27 @@ export default function EmployeeTable() {
                   return (
                     <TableRow key={emp.employeeId}>
                       <TableCell className="text-center">
-                        <Link
-                          href={`/employees/${emp.employeeId}`}
-                          className="text-blue-600 underline"
-                          title={emp.email}
-                        >
-                          {emp.employeeId}
-                        </Link>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Link
+                                href={`/employees/${emp.employeeId}`}
+                                className="text-blue-600 underline cursor-pointer"
+                              >
+                                {emp.employeeId}
+                              </Link>
+                            </TooltipTrigger>
+
+                            <TooltipContent
+                              side="top"
+                              align="center"
+                              className="bg-white text-black px-3 py-1.5 text-sm rounded-lg shadow-md border"
+                            >
+                              {emp.email}
+                              <TooltipArrow className="fill-white" />
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </TableCell>
 
                       <TableCell className="text-center border border-gray-300">{[emp.firstName].filter(Boolean).join(" ")}</TableCell>

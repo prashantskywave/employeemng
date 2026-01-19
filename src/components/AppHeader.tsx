@@ -3,8 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import { useSession, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
@@ -89,41 +87,6 @@ export default function AppHeader() {
                 <span className="font-medium text-gray-800">Role: </span>
                 {session?.user?.role || "—"}
               </p>
-
-              <div className="flex gap-2 justify-center pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setOpen(false);
-                    router.push("/profile");
-                  }}
-                  className="flex items-center gap-1 px-3"
-                >
-                  <User className="h-4 w-4" />
-                  Profile
-                </Button>
-
-                <Button
-                  variant={logoutActive ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    setLogoutActive(true);
-                    signOut({ callbackUrl: "/login" });
-                  }}
-                  className={`flex items-center gap-1 px-3 ${logoutActive
-                      ? "bg-red-600 text-white hover:bg-red-700"
-                      : "border-red-600 text-red-600 hover:bg-red-50"
-                    }`}
-                >
-                  <LogOut
-                    className={`h-4 w-4 ${logoutActive ? "text-white" : "text-red-600"
-                      }`}
-                  />
-                  Logout
-                </Button>
-
-              </div>
             </CardContent>
           </Card>
         )}

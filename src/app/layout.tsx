@@ -2,12 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/app/providers";
-import HeaderWrapper from "@/components/HeaderWrapper";
-import SidebarWrapper from "@/components/SidebarWrapper";
-import ToasterProvider from "@/components/providers/ToasterProvider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import  AppSidebar  from "@/components/AppSidebar";
-import AppHeader from "@/components/AppHeader";
 import ClientLayout from "@/components/ClientLayout";
 
 
@@ -36,12 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <ClientLayout>
-            {/* COMMON ALIGNMENT WRAPPER */}
-            <div className="px-6 py-4">
-              {children}
-            </div>
-          </ClientLayout>
+          <ClientLayout>{children}</ClientLayout>
         </Providers>
       </body>
     </html>
