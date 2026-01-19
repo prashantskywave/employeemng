@@ -13,27 +13,37 @@ export default function AppSidebar() {
     <aside
       className={clsx(
         "hidden md:flex h-screen bg-white border-r transition-all duration-300 flex-col",
-       collapsed ? "md:w-16" : "md:w-64"
+        collapsed ? "md:w-16" : "md:w-64"
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-4 border-b">
+      <div
+        className={clsx(
+          "flex items-center px-4 py-4 border-b h-16",
+          collapsed ? "justify-center" : "justify-center gap-8 "
+        )}
+      >
         <button onClick={() => setCollapsed(!collapsed)}>
           <Menu size={20} />
         </button>
 
         {!collapsed && (
-          <h1 className="text-lg font-semibold">HRMS</h1>
+          <h1 className="text-lg font-semibold">
+            HRMS  
+          </h1>
         )}
       </div>
 
       {/* Menu */}
-      <div className="flex-1">
+      <div className="flex-1 w-full flex justify-center">
         <SidebarMenu collapsed={collapsed} />
       </div>
 
+
       {/* Footer */}
-      <SidebarFooter collapsed={collapsed} />
+      <div className="px-4 py-4 flex justify-center">
+        <SidebarFooter collapsed={collapsed} />
+      </div>
     </aside>
   );
 }

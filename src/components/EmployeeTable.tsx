@@ -283,11 +283,7 @@ export default function EmployeeTable() {
                 <span className="font-medium whitespace-nowrap">entries</span>
               </div>
             </div>
-
-
           </div>
-
-
           <Table className="w-full border border-gray-300 border-collapse rounded-md">
             <TableHeader>
               <TableRow className="bg-muted">
@@ -366,8 +362,8 @@ export default function EmployeeTable() {
                                     </Link>
                                   ) : (
                                     <div className="flex items-center gap-2">
-                                      <FiEdit className="text-gray-400" />                                     
-                                       Edit
+                                      <FiEdit className="text-gray-400" />
+                                      Edit
                                     </div>
                                   )}
                                 </DropdownMenuItem>

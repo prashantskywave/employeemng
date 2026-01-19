@@ -1,138 +1,3 @@
-// "use client";
-
-// import { useState, useRef, useEffect } from "react";
-// import { CgProfile } from "react-icons/cg";
-// import { useSession, signOut } from "next-auth/react";
-// import { Button } from "@/components/ui/button";
-// import { LogOut, User } from "lucide-react";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { useRouter } from "next/navigation";
-// import Image from "next/image";
-
-// const getInitials = (name?: string | null) => {
-//   if (!name) return "";
-//   return name
-//     .split(" ")
-//     .filter(Boolean)
-//     .map((n) => n[0].toUpperCase())
-//     .join("")
-//     .slice(0, 2);
-// };
-
-// export default function AppHeader() {
-//   const router = useRouter();
-//   const [open, setOpen] = useState(false);
-//   const [logoutActive, setLogoutActive] = useState(false);
-//   const { data: session } = useSession();
-//   const dropdownRef = useRef<HTMLDivElement>(null);
-
-//   useEffect(() => {
-//     function handleClickOutside(event: MouseEvent) {
-//       if (
-//         dropdownRef.current &&
-//         !dropdownRef.current.contains(event.target as Node)
-//       ) {
-//         setOpen(false);
-//         setLogoutActive(false);
-//       }
-//     }
-
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => {
-//       document.removeEventListener("mousedown", handleClickOutside);
-//     };
-//   }, []);
-
-//   return (
-//     <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
-//       <h1 className="text-xl font-semibold">Employee Management</h1>
-
-//       <div className="relative" ref={dropdownRef}>
-//         <div
-//           className="w-9 h-9 rounded-full overflow-hidden cursor-pointer border"
-//           onClick={() => setOpen(!open)}
-//         >
-//           {session?.user?.profileImage ? (
-//   <img
-//     src={session.user.profileImage}
-//     alt="Profile"
-//     className="w-full h-full object-cover rounded-full"
-//     onError={(e) => {
-//       (e.target as HTMLImageElement).style.display = "none";
-//     }}
-//   />
-// ) : session?.user?.name ? (
-//   <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-bold text-xs">
-//     {getInitials(session.user.name)}
-//   </div>
-// ) : (
-//   <CgProfile className="h-6 w-6 text-gray-600 m-auto" />
-// )}
-
-//         </div>
-
-
-//         {open && (
-//           <Card className="absolute right-0 mt-2 w-56 border border-gray-200 shadow-md z-30 rounded-lg">
-//             <CardContent className="p-4">
-//               <p className="text-sm font-bold mb-2 text-gray-800">Profile</p>
-
-//               <p className="text-sm text-gray-700 mb-1">
-//                 <span className="font-medium text-gray-800">Name: </span>
-//                 {session?.user?.firstName || "—"}
-//               </p>
-
-//               <p className="text-sm text-gray-700 mb-3">
-//                 <span className="font-medium text-gray-800">Role: </span>
-//                 {session?.user?.role}
-//               </p>
-
-//               <div className="flex gap-2 justify-center pt-2">
-//                 <Button
-//                   variant="outline"
-//                   size="sm"
-//                   onClick={() => {
-//                     setOpen(false);
-//                     router.push("/profile");
-//                   }}
-//                   className="flex items-center gap-1 px-3"
-//                 >
-//                   <User className="h-4 w-4" />
-//                   Profile
-//                 </Button>
-
-//                 <Button
-//                   variant={logoutActive ? "default" : "outline"}
-//                   size="sm"
-//                   onClick={() => {
-//                     setLogoutActive(true);
-//                     signOut({ callbackUrl: "/login" });
-//                   }}
-//                   className={`flex items-center gap-1 px-3 ${logoutActive
-//                     ? "bg-black text-white"
-//                     : "bg-white text-black hover:bg-gray-100"
-//                     }`}
-//                 >
-//                   <LogOut
-//                     className={`h-4 w-4 ${logoutActive ? "text-white" : "text-black"
-//                     ? "bg-red-600 text-white border-red-600"
-//                     : "bg-white text-red-600 border-red-600 hover:bg-red-50"
-//                     }`}
-//                 >
-//                   <LogOut
-//                     className={`h-4 w-4 ${logoutActive ? "text-white" : "text-red-600"
-//                       }`}
-//                   />
-//                   Logout
-//                 </Button>
-//               </div>
-//             </CardContent>
-//           </Card>
-//         )}
-//       </div>
-//     </header>
-//   );
-// }
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -179,8 +44,10 @@ export default function AppHeader() {
   }, []);
 
   return (
-    <header className="h-14 flex items-center justify-between px-6 border-b bg-white">
-      <h1 className="text-xl font-semibold">Employee Management</h1>
+    <header className="h-16 flex items-center justify-between px-6 border-b bg-white">
+      <div className="px-6">
+        <h1 className="text-lg font-semibold">Employee Management</h1>
+      </div>
 
       <div className="relative" ref={dropdownRef}>
         <div
@@ -213,9 +80,8 @@ export default function AppHeader() {
               <p className="text-sm text-gray-700 mb-1">
                 <span className="font-medium text-gray-800">Name: </span>
                 {session?.user?.firstName || session?.user?.lastName
-                  ? `${session?.user?.firstName ?? ""} ${
-                      session?.user?.lastName ?? ""
-                    }`
+                  ? `${session?.user?.firstName ?? ""} ${session?.user?.lastName ?? ""
+                  }`
                   : "—"}
               </p>
 
@@ -245,18 +111,18 @@ export default function AppHeader() {
                     setLogoutActive(true);
                     signOut({ callbackUrl: "/login" });
                   }}
-                  className={`flex items-center gap-1 px-3 ${
-                    logoutActive
-                      ? "bg-black text-white"
-                      : "bg-white text-black hover:bg-gray-100"
-                  }`}
+                  className={`flex items-center gap-1 px-3 ${logoutActive
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "border-red-600 text-red-600 hover:bg-red-50"
+                    }`}
                 >
                   <LogOut
-                    className={`h-4 w-4 ${logoutActive ? "text-white" : "text-black"
+                    className={`h-4 w-4 ${logoutActive ? "text-white" : "text-red-600"
                       }`}
                   />
                   Logout
                 </Button>
+
               </div>
             </CardContent>
           </Card>

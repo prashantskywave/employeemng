@@ -47,11 +47,12 @@ export default function ChangePassword() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+    <form onSubmit={handleSubmit} className="space-y-4 mb-2  max-w-md">
       <div>
         <Label>Current Password</Label>
         <Input
           type="password"
+          className="mt-2"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           required
@@ -62,6 +63,7 @@ export default function ChangePassword() {
         <Label>New Password</Label>
         <Input
           type="password"
+          className="mt-2"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
@@ -72,6 +74,7 @@ export default function ChangePassword() {
         <Label>Confirm Password</Label>
         <Input
           type="password"
+          className="mt-2"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required

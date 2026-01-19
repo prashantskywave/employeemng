@@ -13,23 +13,19 @@ export default function ClientLayout({
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
 
-  // 🔐 LOGIN PAGE → NO SIDEBAR / HEADER
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  // 🧭 OTHER PAGES → SIDEBAR + HEADER
   return (
     <SidebarProvider>
-      <div className="flex h-screen overflow-hidden min-w-[1280px]">
-        {/* SIDEBAR */}
+      <div className="flex h-screen w-full overflow-hidden">
         <AppSidebar />
 
-        {/* RIGHT CONTENT */}
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col bg-gray-50">
           <AppHeader />
 
-          <main className="flex-1 overflow-auto p-6 bg-gray-50">
+          <main className="flex-1 overflow-auto p-6">
             {children}
           </main>
         </div>

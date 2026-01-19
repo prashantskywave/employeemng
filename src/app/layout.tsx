@@ -33,13 +33,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   <html lang="en">
+    <html lang="en">
       <body>
         <Providers>
-          {/* CLIENT LOGIC MOVED HERE */}
-          <ClientLayout>{children}</ClientLayout>
+          <ClientLayout>
+            {/* COMMON ALIGNMENT WRAPPER */}
+            <div className="px-6 py-4">
+              {children}
+            </div>
+          </ClientLayout>
         </Providers>
       </body>
     </html>
   );
 }
+
