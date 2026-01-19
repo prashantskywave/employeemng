@@ -13,14 +13,14 @@ export default function AppSidebar() {
     <aside
       className={clsx(
         "hidden md:flex h-screen bg-white border-r transition-all duration-300 flex-col",
-        collapsed ? "md:w-16" : "md:w-64"
+        collapsed ? "md:w-16" : "md:w-50"
       )}
     >
       {/* Header */}
       <div
         className={clsx(
           "flex items-center px-4 py-4 border-b h-16",
-          collapsed ? "justify-center" : "justify-center gap-8 "
+          collapsed ? "justify-center" : "justify-center gap-2 "
         )}
       >
         <button onClick={() => setCollapsed(!collapsed)}>

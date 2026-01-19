@@ -33,7 +33,7 @@ export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
               flex items-center gap-5 px-6 py-3 rounded-lg
               w-full                  
               transition-colors duration-200
-               ${isActive ? "bg-gray-400 text-white" : "hover:bg-gray-300 text-gray-800"}
+               ${isActive ? "bg-black text-white" : "hover:bg-black-300 text-black"}
              `}
           >
             <item.icon

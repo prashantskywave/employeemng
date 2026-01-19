@@ -50,7 +50,7 @@ export default function HomePage() {
     };
     return (
 
-        <div className="flex min-h-screen items-center justify-center bg-gray-200">
+<div className="flex min-h-screen items-center justify-center bg-gray-200 overflow-hidden">
             <Card className="w-96">
                 <CardHeader>
                     <CardTitle className="text-center font-bold text-xl">Login</CardTitle>

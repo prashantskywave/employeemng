@@ -31,6 +31,12 @@ export default function RootLayout({
       <body>
         <Providers>
           <ClientLayout>{children}</ClientLayout>
+          <ClientLayout>
+            {/* COMMON ALIGNMENT WRAPPER */}
+            <div className="px-0 py-0">
+              {children}
+            </div>
+          </ClientLayout>
         </Providers>
       </body>
     </html>
