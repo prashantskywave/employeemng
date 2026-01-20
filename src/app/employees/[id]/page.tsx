@@ -4,6 +4,7 @@ import { BiDetail } from "react-icons/bi";
 import { IoArrowBack } from "react-icons/io5";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { headers } from "next/headers";
+import { Metadata } from "next";
 
 interface Employee {
   _id: string;
@@ -18,6 +19,11 @@ interface Employee {
   status: string;
   profileImage?: string;
 }
+export const metadata: Metadata = {
+  title: "HRMS | Employees | Details",
+  description: "View details of an employee in the Employee Management System.",
+};
+
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("en-IN", {

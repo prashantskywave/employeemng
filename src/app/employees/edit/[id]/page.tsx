@@ -23,6 +23,8 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
+import { Metadata } from "next";
+
 
 const inputClass = "h-9 text-sm leading-none px-3 placeholder:text-sm";
 const selectInputLike = "h-9 w-full text-sm px-3";
@@ -34,6 +36,12 @@ export default function EditEmployeePage({
 }) {
   const router = useRouter();
   const { id } = use(params);
+
+  const metadata: Metadata = {
+    title: 'HRMS | Employees | Edit',
+    description: 'Edit an existing employee in the Employee Management System.',
+  };
+  document.title = metadata.title.toString();
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -59,7 +67,6 @@ export default function EditEmployeePage({
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   useEffect(() => {
     async function fetchEmployee() {
       try {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChangePassword from "./change-password";
@@ -11,6 +11,10 @@ import { useRouter } from "next/navigation";
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  useEffect(() => {
+    document.title = "HRMS | Profile";
+
+  }, []);
 
   if (status === "loading") {
     return <div className="p-6">Loading...</div>;

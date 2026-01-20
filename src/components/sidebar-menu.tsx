@@ -18,12 +18,14 @@ const menu = [
 ];
 
 export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   return (
     <nav className="mt-4">
       {menu.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive = item.href === "/"
+          ? pathname === "/"
+          : pathname.startsWith(item.href);
 
         return (
           <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,10 @@ export default function AddEmployeePage() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
   const { data: session } = useSession();
+
+  useEffect(() => {
+    document.title = "HRMS | Employees | Add";
+  }, []);
 
   const currentUserDept = session?.user?.department?.toLowerCase() ?? "";
 
@@ -84,7 +88,6 @@ export default function AddEmployeePage() {
       lastName: formattedLastName,
     };
 
-    
     for (const [key, value] of Object.entries(updatedForm)) {
       if (key === "profileImage") continue;
       if (typeof value === "string" && !value.trim()) {
