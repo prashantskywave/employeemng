@@ -28,13 +28,13 @@ import {
 const inputClass = "h-9 text-sm leading-none px-3 placeholder:text-sm";
 const selectInputLike = "h-9 w-full text-sm px-3";
 
-export default async function EditEmployeePage({
+export default function EditEmployeePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const { id } = await params;
+   const { id } = use(params);
 
    useEffect(() => {
     document.title = "HRMS | Employees | Edit";
