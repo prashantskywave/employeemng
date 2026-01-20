@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Employee from "@/models/Employee";
+import fs from "fs";
+import path from "path";
+
 
 export async function GET(
   req: NextRequest,
@@ -45,9 +48,18 @@ export async function PUT(
         const buffer = Buffer.from(bytes);
 
         const fileName = `${Date.now()}-${value.name}`;
-        const filePath = `public/uploads/${fileName}`;
+        // const filePath = `public/uploads/${fileName}`;
 
-        await require("fs").promises.writeFile(filePath, buffer);
+        // await require("fs").promises.writeFile(filePath, buffer);
+        const uploadDir = path.join(process.cwd(), "public/uploads");
+
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const filePath = path.join(uploadDir, fileName);
+        await fs.promises.writeFile(filePath, buffer);
+
         profileImagePath = `/uploads/${fileName}`;
       } else {
         body[key] = value;
@@ -58,17 +70,17 @@ export async function PUT(
   }
 
   if (profileImagePath) {
-  body.profileImage = profileImagePath;
-}
+    body.profileImage = profileImagePath;
+  }
 
-delete body.profileImageUrl;
+  delete body.profileImageUrl;
 
 
-const updatedEmployee = await Employee.findOneAndUpdate(
-  { employeeId: id },
-  { $set: body },
-  { new: true, runValidators: true }
-);
+  const updatedEmployee = await Employee.findOneAndUpdate(
+    { employeeId: id },
+    { $set: body },
+    { new: true, runValidators: true }
+  );
 
   if (!updatedEmployee) {
     return NextResponse.json(
