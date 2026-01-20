@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -23,26 +23,22 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Metadata } from "next";
 
 
 const inputClass = "h-9 text-sm leading-none px-3 placeholder:text-sm";
 const selectInputLike = "h-9 w-full text-sm px-3";
 
-export default function EditEmployeePage({
+export default async function EditEmployeePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const { id } = use(params);
+  const { id } = await params;
 
-  const metadata: Metadata = {
-    title: 'HRMS | Employees | Edit',
-    description: 'Edit an existing employee in the Employee Management System.',
-  };
-  document.title = metadata.title.toString();
-
+   useEffect(() => {
+    document.title = "HRMS | Employees | Edit";
+  }, []);
   const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
