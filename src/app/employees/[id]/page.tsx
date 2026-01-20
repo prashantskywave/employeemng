@@ -165,7 +165,7 @@ export default async function EmployeeDetails({
                       : `${protocol}://${host}/${employee.profileImage}`
                   }
                   alt="Profile"
-                  className="h-28 w-28 rounded-full object-cover border"
+                  className="h-28 w-28 rounded-full "
                 />
 
               ) : (

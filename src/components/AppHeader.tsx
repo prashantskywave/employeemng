@@ -49,7 +49,7 @@ export default function AppHeader() {
 
       <div className="relative" ref={dropdownRef}>
         <div
-          className="w-9 h-9 rounded-full overflow-hidden cursor-pointer border"
+          className="w-9 h-9 rounded-full overflow-hidden"
           onClick={() => setOpen(!open)}
         >
           {session?.user?.profileImage ? (
