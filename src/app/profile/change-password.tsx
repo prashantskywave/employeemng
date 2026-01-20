@@ -82,7 +82,7 @@ export default function ChangePassword() {
       </div>
 
       <Button type="submit" disabled={loading}
-        className="px-2 py-2 text-sm">
+        className="px-1 py-1 text-sm">
         {loading ? "Updating..." : "Update Password"}
       </Button>
     </form>

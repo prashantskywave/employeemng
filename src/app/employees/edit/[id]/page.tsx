@@ -34,9 +34,9 @@ export default function EditEmployeePage({
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-   const { id } = use(params);
+  const { id } = use(params);
 
-   useEffect(() => {
+  useEffect(() => {
     document.title = "HRMS | Employees | Edit";
   }, []);
   const today = new Date().toISOString().split("T")[0];

@@ -32,7 +32,7 @@ export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
             key={item.label}
             href={item.href}
             className={`
-              flex items-center gap-4 px-3 py-3 
+              flex items-center gap-4 px-1 py-1 
               w-full   
               rounded-sm               
               transition-colors duration-200
