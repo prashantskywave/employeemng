@@ -138,7 +138,7 @@ export default function EditEmployeePage({
 
 
     for (const [key, value] of Object.entries(updatedForm)) {
-      if (key === "profileImage") continue;
+      if (key === "profileImage" || key === "profileImageUrl") continue;
 
       if (typeof value === "string") {
         if (value.trim() === "") {
@@ -176,10 +176,20 @@ export default function EditEmployeePage({
     }
 
     try {
+
+      const formData = new FormData();
+
+      Object.entries(updatedForm).forEach(([key, value]) => {
+        if (key === "profileImage" && value) {
+          formData.append("profileImage", value as File);
+        } else if (typeof value === "string") {
+          formData.append(key, value);
+        }
+      });
+
       const res = await fetch(`/api/employees/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedForm),
+        body: formData,
       });
 
       if (res.ok) {
