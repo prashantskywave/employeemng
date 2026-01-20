@@ -58,12 +58,11 @@ export async function PUT(
   }
 
   if (profileImagePath) {
-    body.profileImage = profileImagePath;
-  }
-
-if (!profileImagePath) {
-  delete body.profileImage;
+  body.profileImage = profileImagePath;
 }
+
+delete body.profileImageUrl;
+
 
 const updatedEmployee = await Employee.findOneAndUpdate(
   { employeeId: id },
