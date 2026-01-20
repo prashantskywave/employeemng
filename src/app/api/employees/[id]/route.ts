@@ -23,46 +23,7 @@ export async function GET(
   return NextResponse.json(employee, { status: 200 });
 }
 
-// export async function PUT(
-//   req: NextRequest,
-//   context: { params: Promise<{ id: string }> }
-// ) {
-//   await connectDB();
-//   const { id } = await context.params;
-//   const body = await req.json();
 
-//   if (body.email) {
-//     const existingEmployee = await Employee.findOne({
-//       email: body.email.trim(),
-//       employeeId: { $ne: id },
-//     });
-
-//     if (existingEmployee) {
-//       return NextResponse.json(
-//         { message: "Email already exists" },
-//         { status: 400 }
-//       );
-//     }
-//   }
-
-//   const updatedEmployee = await Employee.findOneAndUpdate(
-//     { employeeId: id },
-//     body,
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-
-//   if (!updatedEmployee) {
-//     return NextResponse.json(
-//       { message: "Employee not found" },
-//       { status: 404 }
-//     );
-//   }
-
-//   return NextResponse.json(updatedEmployee, { status: 200 });
-// }
 export async function PUT(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -80,7 +41,6 @@ export async function PUT(
 
     for (const [key, value] of formData.entries()) {
       if (key === "profileImage" && value instanceof File) {
-        // save file
         const bytes = await value.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
@@ -101,7 +61,6 @@ export async function PUT(
     body.profileImage = profileImagePath;
   }
 
-  // 🔒 remove profileImage if no new image uploaded
 if (!profileImagePath) {
   delete body.profileImage;
 }
