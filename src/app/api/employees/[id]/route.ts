@@ -87,6 +87,7 @@ export async function PUT(
       { message: "Employee not found" },
       { status: 404 }
     );
+    
   }
 
   return NextResponse.json(updatedEmployee, { status: 200 });

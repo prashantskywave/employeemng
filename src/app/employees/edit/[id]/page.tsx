@@ -56,7 +56,7 @@ export default function EditEmployeePage({
 
   });
 
-  const { data: session } = useSession();
+const { data: session, update } = useSession();
 
   const currentUserDept =
     session?.user?.department?.toLowerCase() ?? "";
@@ -138,18 +138,22 @@ export default function EditEmployeePage({
 
 
     for (const [key, value] of Object.entries(updatedForm)) {
-      if (key === "profileImage" || key === "profileImageUrl") continue;
+  if (key === "profileImage") continue;
 
-      if (typeof value === "string") {
-        if (value.trim() === "") {
-          toast.error(`Please fill the ${key} field`, {
-            position: "top-center",
-          });
-          setSaving(false);
-          return;
-        }
-      }
-    }
+  if (
+  typeof value === "string" &&
+  !value.trim() &&
+  !id 
+) {
+  toast.error(`Please fill the ${key} field`, {
+    position: "top-center",
+  });
+  setSaving(false);
+  return;
+}
+
+}
+
 
     const nameRegex = /^[A-Z][a-z]+$/;
     if (!nameRegex.test(formattedFirstName)) {
@@ -179,24 +183,10 @@ export default function EditEmployeePage({
 
       const formData = new FormData();
 
-      // Object.entries(updatedForm).forEach(([key, value]) => {
-      //   if (key === "profileImage" && value) {
-      //     formData.append("profileImage", value as File);
-      //   } else if (typeof value === "string") {
-      //     formData.append(key, value);
-      //   }
-      // });
       Object.entries(updatedForm).forEach(([key, value]) => {
-        if (key === "profileImage") {
-          if (value instanceof File) {
-            formData.append("profileImage", value);
-          }
-          return;
-        }
-
-        if (key === "profileImageUrl") return;
-
-        if (typeof value === "string") {
+        if (key === "profileImage" && value) {
+          formData.append("profileImage", value as File);
+        } else if (typeof value === "string") {
           formData.append(key, value);
         }
       });
@@ -207,13 +197,26 @@ export default function EditEmployeePage({
       });
 
       if (res.ok) {
-        toast.success("Employee updated successfully", { position: "top-center" });
-        setTimeout(() => {
-          router.push("/employees");
-        }, 1500);
-      } else {
-        const data = await res.json();
+  const data = await res.json(); 
 
+  if (data?.profileImage) {
+    await update({
+      user: {
+        ...session?.user,
+        image: data.profileImage, 
+      },
+    });
+  }
+
+  toast.success("Employee updated successfully", { position: "top-center" });
+
+  setTimeout(() => {
+    router.push("/employees");
+  }, 1500);
+}
+
+      else {
+        const data = await res.json();
         if (
           data?.error?.toLowerCase().includes("duplicate") ||
           data?.message?.toLowerCase().includes("email")
