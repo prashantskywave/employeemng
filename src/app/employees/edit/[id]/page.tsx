@@ -135,16 +135,15 @@ export default function EditEmployeePage({
     };
 
     //setForm(updatedForm);
-
-
     for (const [key, value] of Object.entries(updatedForm)) {
       if (key === "profileImage" || key === "profileImageUrl") continue;
 
       if (typeof value === "string") {
-        if (value.trim() === "") {
-          toast.error(`Please fill the ${key} field`, {
-            position: "top-center",
-          });
+        if (!value.trim()) {
+          toast.error(
+            `Please fill the ${key.replace(/([A-Z])/g, " $1")} field`,
+            { position: "top-center" }
+          );
           setSaving(false);
           return;
         }
