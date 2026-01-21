@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Users, User } from "lucide-react";
+import { clsx } from "clsx";
 
 const menu = [
   {
@@ -31,19 +32,29 @@ export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
           <Link
             key={item.label}
             href={item.href}
-            className={`
-              flex items-center gap-4 px-1 py-1 
-              w-full   
-              rounded-sm               
-              transition-colors duration-200
-               ${isActive ? "bg-black text-white" : "hover:bg-black-300 text-black"}
-             `}
+            className={clsx(
+              "flex items-center gap-3 px-2 py-2 w-full rounded-sm transition-all duration-200",
+              isActive ? "bg-black text-white" : "hover:bg-gray-300 text-black"
+            )}
           >
             <item.icon
               size={20}
-              className={isActive ? "text-white" : "text-gray-800"}
+              className={clsx(
+                "shrink-0 min-w-[20px]",
+                isActive ? "text-white" : "text-gray-800"
+              )}
             />
-            {!collapsed && <span>{item.label}</span>}
+            <span
+              className={clsx(
+                "overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
+                collapsed
+                  ? "opacity-0 max-w-0 translate-x-[-6px]"
+                  : "opacity-100 max-w-[140px] translate-x-0"
+              )}
+            >
+              {item.label}
+            </span>
+
           </Link>
         );
       })}

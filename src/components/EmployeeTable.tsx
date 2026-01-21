@@ -288,7 +288,8 @@ export default function EmployeeTable() {
             <TableHeader>
               <TableRow className="bg-muted">
                 <TableHead className="p-2 border text-center">Employee ID</TableHead>
-                <TableHead className="p-2 border text-center">Name</TableHead>
+                <TableHead className="p-2 border text-center">First Name</TableHead>
+                <TableHead className="p-2 border text-center">Last Name</TableHead>
                 <TableHead className="p-2 border text-center">Department</TableHead>
                 <TableHead className="p-2 border text-center">Role</TableHead>
                 <TableHead className="p-2 border text-center">Status</TableHead>
@@ -331,8 +332,18 @@ export default function EmployeeTable() {
                         </TooltipProvider>
                       </TableCell>
 
-                      <TableCell className="text-center border border-gray-300">{[emp.firstName].filter(Boolean).join(" ")}</TableCell>
-                      <TableCell className="text-center border border-gray-300">{emp.department}</TableCell>
+                      <TableCell className="text-center border border-gray-300">
+                        {emp.firstName || "-"}
+                      </TableCell>
+
+                      <TableCell className="text-center border border-gray-300">
+                        {emp.lastName || "-"}
+                      </TableCell>
+
+                      <TableCell className="text-center border border-gray-300">
+                        {emp.department}
+                      </TableCell>
+
                       <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
 
                       <TableCell className="text-center border border-gray-300">

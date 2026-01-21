@@ -72,9 +72,8 @@ export default function AppHeader() {
 
         {open && (
           <Card className="absolute right-0 mt-2 w-56 border border-gray-200 shadow-md z-30 rounded-lg">
-            <CardContent className="p-4">
-              <p className="text-sm font-bold mb-2 text-gray-800">Profile</p>
-
+            <CardContent className="px-3 py-0.5">
+              <p className="text-sm font-bold mb-1 text-gray-800">Profile</p>
               <p className="text-sm text-gray-700 mb-1">
                 <span className="font-medium text-gray-800">Name: </span>
                 {session?.user?.firstName || session?.user?.lastName
@@ -82,8 +81,7 @@ export default function AppHeader() {
                   }`
                   : "—"}
               </p>
-
-              <p className="text-sm text-gray-700 mb-3">
+              <p className="text-sm text-gray-700">
                 <span className="font-medium text-gray-800">Role: </span>
                 {session?.user?.role || "—"}
               </p>

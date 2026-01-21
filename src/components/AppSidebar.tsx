@@ -12,36 +12,31 @@ export default function AppSidebar() {
   return (
     <aside
       className={clsx(
-        "hidden md:flex h-screen bg-gray-200  transition-all duration-300 flex-col",
-        collapsed ? "md:w-16" : "md:w-50"
+        "hidden md:flex h-screen bg-gray-200 flex-col overflow-hidden transition-[width] duration-300 ease-in-out",
+        collapsed ? "w-12" : "w-48"
       )}
     >
-      {/* Header */}
-      <div
-        className={clsx(
-          "flex items-center px-4 py-4  h-16",
-          collapsed ? "justify-center" : "justify-center gap-2 "
-        )}
-      >
+      <div className="flex items-center h-14 px-3 gap-3">
         <button onClick={() => setCollapsed(!collapsed)}>
           <Menu size={20} />
         </button>
 
-        {!collapsed && (
-          <h1 className="text-lg font-semibold">
-            HRMS  
-          </h1>
-        )}
+        <span
+          className={clsx(
+            "text-lg font-semibold whitespace-nowrap transition-all duration-300",
+            collapsed ? "opacity-0 scale-95 translate-x-[-8px]"
+              : "opacity-100 scale-100 translate-x-0"
+          )}
+        >
+          HRMS
+        </span>
       </div>
 
-      {/* Menu */}
-      <div className="flex-1 w-full flex justify-center">
+      <div className="flex-1 px-0.5">
         <SidebarMenu collapsed={collapsed} />
       </div>
 
-
-      {/* Footer */}
-      <div className="px-4 py-4 flex justify-center">
+      <div className="px-1 py-4">
         <SidebarFooter collapsed={collapsed} />
       </div>
     </aside>

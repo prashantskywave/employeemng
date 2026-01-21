@@ -46,10 +46,12 @@ export default function ProfilePage() {
               {session?.user?.employeeId || "—"}
             </p>
             <p>
-              <span className="font-medium">Name:</span>{" "}
-              {session?.user?.firstName || session?.user?.lastName
-                ? `${session?.user?.firstName} ${session?.user?.lastName}`
-                : "—"}
+              <span className="font-medium">First Name:</span>{" "}
+              {session?.user?.firstName || "—"}
+            </p>
+            <p>
+              <span className="font-medium">Last Name:</span>{" "}
+              {session?.user?.lastName || "—"}
             </p>
             <p>
               <span className="font-medium">Email:</span>{" "}
@@ -83,9 +85,7 @@ export default function ProfilePage() {
                 {session?.user?.status || "—"}
               </span>
             </p>
-
           </div>
-
           <div className="flex justify-center md:justify-center py-10 px-10">
             {session?.user?.profileImage ? (
               <img
@@ -105,7 +105,6 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Change Password</CardTitle>

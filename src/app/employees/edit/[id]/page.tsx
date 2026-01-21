@@ -56,7 +56,7 @@ export default function EditEmployeePage({
 
   });
 
-const { data: session, update } = useSession();
+  const { data: session, update } = useSession();
 
   const currentUserDept =
     session?.user?.department?.toLowerCase() ?? "";
@@ -128,6 +128,12 @@ const { data: session, update } = useSession();
     const formattedFirstName = capitalizeName(form.firstName);
     const formattedLastName = capitalizeName(form.lastName);
 
+    if (!formattedLastName) {
+      toast.error("Last Name is required", { position: "top-center" });
+      setSaving(false);
+      return;
+    }
+
     const updatedForm = {
       ...form,
       firstName: formattedFirstName,
@@ -138,23 +144,21 @@ const { data: session, update } = useSession();
 
 
     for (const [key, value] of Object.entries(updatedForm)) {
-  if (key === "profileImage") continue;
+      if (key === "profileImage") continue;
 
-  if (
-  typeof value === "string" &&
-  !value.trim() &&
-  !id 
-) {
-  toast.error(`Please fill the ${key} field`, {
-    position: "top-center",
-  });
-  setSaving(false);
-  return;
-}
+      if (
+        typeof value === "string" &&
+        !value.trim() &&
+        !id
+      ) {
+        toast.error(`Please fill the ${key} field`, {
+          position: "top-center",
+        });
+        setSaving(false);
+        return;
+      }
 
-}
-
-
+    }
     const nameRegex = /^[A-Z][a-z]+$/;
     if (!nameRegex.test(formattedFirstName)) {
       toast.error("First Name must contain only string and each word should start with a capital letter",
@@ -197,23 +201,23 @@ const { data: session, update } = useSession();
       });
 
       if (res.ok) {
-  const data = await res.json(); 
+        const data = await res.json();
 
-  if (data?.profileImage) {
-    await update({
-      user: {
-        ...session?.user,
-        image: data.profileImage, 
-      },
-    });
-  }
+        if (data?.profileImage) {
+          await update({
+            user: {
+              ...session?.user,
+              image: data.profileImage,
+            },
+          });
+        }
 
-  toast.success("Employee updated successfully", { position: "top-center" });
+        toast.success("Employee updated successfully", { position: "top-center" });
 
-  setTimeout(() => {
-    router.push("/employees");
-  }, 1500);
-}
+        setTimeout(() => {
+          router.push("/employees");
+        }, 1500);
+      }
 
       else {
         const data = await res.json();
