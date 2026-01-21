@@ -135,15 +135,16 @@ export default function EditEmployeePage({
     };
 
     //setForm(updatedForm);
+
+
     for (const [key, value] of Object.entries(updatedForm)) {
       if (key === "profileImage" || key === "profileImageUrl") continue;
 
       if (typeof value === "string") {
-        if (!value.trim()) {
-          toast.error(
-            `Please fill the ${key.replace(/([A-Z])/g, " $1")} field`,
-            { position: "top-center" }
-          );
+        if (value.trim() === "") {
+          toast.error(`Please fill the ${key} field`, {
+            position: "top-center",
+          });
           setSaving(false);
           return;
         }
@@ -178,10 +179,24 @@ export default function EditEmployeePage({
 
       const formData = new FormData();
 
+      // Object.entries(updatedForm).forEach(([key, value]) => {
+      //   if (key === "profileImage" && value) {
+      //     formData.append("profileImage", value as File);
+      //   } else if (typeof value === "string") {
+      //     formData.append(key, value);
+      //   }
+      // });
       Object.entries(updatedForm).forEach(([key, value]) => {
-        if (key === "profileImage" && value) {
-          formData.append("profileImage", value as File);
-        } else if (typeof value === "string") {
+        if (key === "profileImage") {
+          if (value instanceof File) {
+            formData.append("profileImage", value);
+          }
+          return;
+        }
+
+        if (key === "profileImageUrl") return;
+
+        if (typeof value === "string") {
           formData.append(key, value);
         }
       });
