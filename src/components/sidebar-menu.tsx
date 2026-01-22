@@ -33,7 +33,7 @@ export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
             key={item.label}
             href={item.href}
             className={clsx(
-              "flex items-center gap-3 px-2 py-2 w-full rounded-sm transition-all duration-200",
+              "flex items-center gap-3 px-3 py-2 w-full rounded-sm transition-all duration-200",
               isActive ? "bg-black text-white" : "hover:bg-gray-300 text-black"
             )}
           >

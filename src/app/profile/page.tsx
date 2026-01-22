@@ -4,13 +4,18 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChangePassword from "./change-password";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { FiEdit } from "react-icons/fi";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  const userDepartment = session?.user?.department?.toLowerCase() ?? "";
+  const canManageEmployee =
+    userDepartment === "admin" || userDepartment === "super_admin";
+    
   useEffect(() => {
     document.title = "HRMS | Profile";
 
@@ -25,18 +30,24 @@ export default function ProfilePage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>My Profile</CardTitle>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.back()}
-              className="flex items-center gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-          </div>
+          {canManageEmployee && (
+            <div className="flex items-center gap-2">
+              {session?.user?.employeeId ? (
+                <Link
+                  href={`/profile/edit`}
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                >
+                  <FiEdit />
+                  Edit
+                </Link>
+              ) : (
+                <div className="flex items-center gap-2 text-gray-400 cursor-not-allowed">
+                  <FiEdit />
+                  Edit
+                </div>
+              )}
+            </div>
+          )}
         </CardHeader>
 
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">

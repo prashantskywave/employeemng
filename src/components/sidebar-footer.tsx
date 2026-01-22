@@ -12,8 +12,10 @@ export default function SidebarFooter({
   return (
     <div className="border-t px-2 py-3">
       <button
-        onClick={() => signOut()}
-        className="flex items-center gap-2 text-red-600 hover:text-red-700 "
+        onClick={() => signOut({
+          callbackUrl: "/login",
+        })}
+        className="flex items-center gap-2 text-red-600 hover:text-red-700 justify-center px-0 items-center gap-2 px-1"
       >
         <LogOut size={20} />
         <span

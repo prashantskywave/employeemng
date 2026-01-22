@@ -1,9 +1,10 @@
-
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db";
 import Employee from "@/models/Employee";
 import { getNextEmployeeId } from "@/models/Counter";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
 export async function POST(request: Request) {
   try {
@@ -30,8 +31,6 @@ export async function POST(request: Request) {
       // For simplicity, we store file under /uploads. In production, save to disk/cloud
       profileImage = `/uploads/${file.name}`;
     }
-
-    // Create Employee
     const employee = await Employee.create({
       employeeId,
       firstName,
@@ -59,9 +58,13 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     await connectDB();
-    const employees = await Employee.find({ isDeleted: false }).sort({
-      createdAt: -1,
-    });
+    const session = await getServerSession(authOptions);
+    const loggedInEmail = session?.user?.email;
+    const employees = await Employee.find({
+      isDeleted: false,
+      ...(loggedInEmail && { email: { $ne: loggedInEmail } }),
+    }).sort({ employeeId: 1 });
+
     return NextResponse.json(employees);
   } catch (error) {
     return NextResponse.json(

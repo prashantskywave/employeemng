@@ -38,6 +38,8 @@ export const config = {
     "/employees/add",
     "/employees/edit/:path*",
     "/employees/profile/:path*",
+    "/profile/:path*", 
+    "/employees/:path*"
   ],
 };
 

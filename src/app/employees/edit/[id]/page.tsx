@@ -24,7 +24,6 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
-
 const inputClass = "h-9 text-sm leading-none px-3 placeholder:text-sm";
 const selectInputLike = "h-9 w-full text-sm px-3";
 
@@ -36,9 +35,6 @@ export default function EditEmployeePage({
   const router = useRouter();
   const { id } = use(params);
 
-  useEffect(() => {
-    document.title = "HRMS | Employees | Edit";
-  }, []);
   const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
@@ -84,6 +80,7 @@ export default function EditEmployeePage({
           profileImageUrl: data.profileImage || "",
 
         }));
+        document.title = "HRMS | Employees | Edit";
       } catch {
         toast.error("Failed to load employee");
       } finally {
@@ -141,7 +138,6 @@ export default function EditEmployeePage({
     };
 
     //setForm(updatedForm);
-
 
     for (const [key, value] of Object.entries(updatedForm)) {
       if (key === "profileImage") continue;
@@ -459,7 +455,6 @@ export default function EditEmployeePage({
                 />
               </label>
             </div>
-
 
             <div className="flex gap-4 justify-center pt-4">
               <Button type="submit" disabled={saving}>

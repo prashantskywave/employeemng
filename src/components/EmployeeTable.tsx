@@ -344,7 +344,9 @@ export default function EmployeeTable() {
                         {emp.department}
                       </TableCell>
 
-                      <TableCell className="text-center border border-gray-300">{emp.role}</TableCell>
+                      <TableCell className="text-center border border-gray-300">
+                        {emp.role}
+                      </TableCell>
 
                       <TableCell className="text-center border border-gray-300">
                         <Status status={emp.status} />
