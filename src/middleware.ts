@@ -29,17 +29,16 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/employees", req.url));
     }
   }
-
-  return NextResponse.next();
 }
-
 export const config = {
   matcher: [
     "/employees/add",
     "/employees/edit/:path*",
     "/employees/profile/:path*",
     "/profile/:path*", 
-    "/employees/:path*"
+    "/employees/:path*",
+    "/departments/:path*",
+     "/roles/:path*"
   ],
 };
 

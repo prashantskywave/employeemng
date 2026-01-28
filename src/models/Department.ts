@@ -1,18 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, models, model } from "mongoose";
 
-const RoleSchema = new mongoose.Schema({
-  roleId: { type: String, required: true },
-  name: { type: String, required: true },
-});
-
-const DepartmentSchema = new mongoose.Schema(
+const DepartmentSchema = new Schema(
   {
-    departmentId: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    roles: [RoleSchema],
+    departmentId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Department ||
-  mongoose.model("Department", DepartmentSchema);
+const Department =
+  models.Department || model("Department", DepartmentSchema, "departments");
+
+export default Department;

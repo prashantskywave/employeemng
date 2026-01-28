@@ -21,6 +21,11 @@ const menu = [
     icon: User,
     href: "/departments",
   },
+  {
+    label: "Roles",
+    icon: User,
+    href: "/roles",
+  },
 ];
 
 export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
