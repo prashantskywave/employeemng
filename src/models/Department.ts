@@ -1,4 +1,4 @@
-import mongoose, { Schema, models, model } from "mongoose";
+import mongoose, { Schema, models } from "mongoose";
 
 const DepartmentSchema = new Schema(
   {
@@ -14,8 +14,7 @@ const DepartmentSchema = new Schema(
   },
   { timestamps: true }
 );
+//console.log("Department schema fields:", Object.keys(DepartmentSchema.paths));
 
-const Department =
-  models.Department || model("Department", DepartmentSchema, "departments");
-
-export default Department;
+export default models.Department ||
+  mongoose.model("Department", DepartmentSchema);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,16 +19,19 @@ type Role = {
   departmentName?: string;
 };
 
-export default function RolesPage() {
+export default function DepartmentRolesPage() {
+  const { departmentId } = useParams<{ departmentId: string }>();
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/roles", { cache: "no-store" })
+    fetch(`/api/roles?departmentId=${departmentId}`, {
+      cache: "no-store",
+    })
       .then((res) => res.json())
       .then(setRoles)
       .finally(() => setLoading(false));
-  }, []);
+  }, [departmentId]);
 
   if (loading) return <p className="p-4">Loading roles...</p>;
   if (roles.length === 0) return <p className="p-4">No roles found</p>;
