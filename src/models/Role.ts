@@ -1,18 +1,17 @@
-import mongoose , { Schema, models, model } from "mongoose";
+import mongoose, { Schema, Types, model, models } from "mongoose";
 
-const RoleSchema = new Schema(
+export interface IRole {
+  roleId: string;
+  name: string;
+  departmentId: Types.ObjectId;
+}
+
+const RoleSchema = new Schema<IRole>(
   {
-    roleId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
+    roleId: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     departmentId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Department",
       required: true,
     },
@@ -20,5 +19,7 @@ const RoleSchema = new Schema(
   { timestamps: true }
 );
 
-const Role = models.Role || model("Role", RoleSchema);
+const Role =
+  models.Role || model<IRole>("Role", RoleSchema);
+
 export default Role;

@@ -20,7 +20,14 @@ export async function GET(req: Request) {
   const roles = await Role.find(filter) 
     .populate("departmentId", "name")
     .sort({ createdAt: -1 });
-  return Response.json(roles);
+
+    const formatted = roles.map((role: any) => ({
+    _id: role._id,
+    roleId: role.roleId,
+    name: role.name,
+    departmentName: role.departmentId?.name,
+  }));
+  return Response.json(formatted);
 
 }
 
@@ -43,9 +50,9 @@ export async function GET(req: Request) {
 // POST create role
 export async function POST(req: Request) {
   try {
-    const { roleName, departmentId } = await req.json();
+    const { name, departmentId } = await req.json();
 
-    if (!roleName || !departmentId) {
+    if (!name || !departmentId) {
       return NextResponse.json(
         { message: "Missing fields" },
         { status: 400 }
@@ -63,7 +70,7 @@ export async function POST(req: Request) {
     }
 
     // Generate roleId 
-    const roleId = generateRoleId(department.name, roleName);
+    const roleId = generateRoleId(department.name, name);
 
     // Prevent duplicate Role ID
     const existingRole = await (Role as any).findOne({ roleId });
@@ -77,7 +84,7 @@ export async function POST(req: Request) {
 
     const role = await Role.create({
       roleId,
-      name: roleName,         
+      name,         
       departmentId: department._id,
     });
 
@@ -118,37 +125,53 @@ export async function PUT(req: Request) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json();
-  const { _id, name, departmentId } = body;
+   try {
+    const body = await req.json();
+    console.log("PUT BODY:", body);
 
-  if (!_id || !name || !departmentId) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 }
-    );
-  }
+    const { id, name, departmentId } = body;
 
-  // ✅ DEFINE ObjectIds properly
-  const roleId = new Types.ObjectId(_id);
-  const deptId = new Types.ObjectId(departmentId);
-
-  const updatedRole = await (Role as any).findOneAndUpdate(
-    { _id: roleId },        // filter
-    { name, departmentId: deptId }, // update
-    {
-      returnDocument: "after",
-      lean: true,
-      includeResultMetadata: true,
+    if (!id || !name) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
     }
+
+    const updateData: any = { name };
+
+    if (departmentId) {
+      updateData.departmentId = new Types.ObjectId(departmentId);
+    }
+
+  // // ✅ DEFINE ObjectIds properly
+  // const roleId = new Types.ObjectId(id);
+  // const deptId = new Types.ObjectId(departmentId);
+
+ const updatedRole = await Role.findByIdAndUpdate(
+  id,
+  updateData,
+  { new: true } as any
+);
+
+
+if (!updatedRole) {
+  return NextResponse.json(
+    { message: "Role not found" },
+    { status: 404 }
   );
-
-  if (!updatedRole?.value) {
-    return NextResponse.json({ message: "Role not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(updatedRole.value);
 }
 
+return NextResponse.json(updatedRole);
+
+  } catch (error) {
+    console.error("Update role error:", error);
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
+  }
+}
 
 // DELETE role
 export async function DELETE(req: Request) {
