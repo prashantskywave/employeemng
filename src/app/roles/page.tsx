@@ -174,17 +174,14 @@ export default function RolesPage() {
     filterDept === "all"
       ? roles
       : roles.filter((role) => {
-        // Case 1: departmentId is populated object
         if (typeof role.departmentId === "object" && role.departmentId?._id) {
           return role.departmentId._id === filterDept;
         }
 
-        // Case 2: departmentId is string
         if (typeof role.departmentId === "string") {
           return role.departmentId === filterDept;
         }
 
-        // Case 3: fallback using departmentName
         const dept = departments.find((d) => d._id === filterDept);
         return dept ? role.departmentName === dept.name : false;
       });
